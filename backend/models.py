@@ -1,0 +1,131 @@
+from datetime import datetime
+#from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
+#from flask_bcrypt import Bcrypt
+from extensions import db, bcrypt
+
+# db = SQLAlchemy()
+# bcrypt = Bcrypt()
+
+# User Model (login)
+class User(UserMixin, db.Model):
+    __tablename__ = "users"
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), unique=True, nullable=False)
+    password_hash = db.Column(db.String(255), nullable=False)
+
+    # Relationships
+    matchmakers = db.relationship("Matchmaker", back_populates="user")
+
+    # Flask-Login required methods
+    def get_id(self):
+        return str(self.id)
+
+    @property
+    def password(self):
+        raise AttributeError("Password is write-only")
+
+    @password.setter
+    def password(self, raw_password):
+        self.password_hash = bcrypt.generate_password_hash(raw_password).decode('utf-8')
+
+    def check_password(self, raw_password):
+        return bcrypt.check_password_hash(self.password_hash, raw_password)
+
+# Matchmaker Model
+class Matchmaker(db.Model):
+    __tablename__ = "matchmakers"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120))
+    location = db.Column(db.String(120))
+    phone_number = db.Column(db.String(50))
+    email_address = db.Column(db.String(120))
+    salary = db.Column(db.Float)
+
+    # FK → User
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+
+    # Relationships
+    user = db.relationship("User", back_populates="matchmakers")
+    matches = db.relationship("Match", back_populates="matchmaker")
+
+    # Through-relationships (not real tables, but accessors)
+    @property
+    def male_singles(self):
+        return list({m.male_single for m in self.matches if m.male_single})
+
+    @property
+    def female_singles(self):
+        return list({m.female_single for m in self.matches if m.female_single})
+
+# Male Singles Model
+class MaleSingle(db.Model):
+    __tablename__ = "male_singles"
+
+    id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(120))
+    last_name = db.Column(db.String(120))
+    age = db.Column(db.Integer)
+    gender = db.Column(db.String(20))
+    location = db.Column(db.String(120))
+    notes = db.Column(db.Text)
+    phone_number = db.Column(db.String(50))
+
+    # Relationships
+    matches = db.relationship("Match", back_populates="male_single")
+
+    @property
+    def matchmakers(self):
+        return list({m.matchmaker for m in self.matches if m.matchmaker})
+
+    @property
+    def female_singles(self):
+        return list({m.female_single for m in self.matches if m.female_single})
+
+# Female Singles Model 
+class FemaleSingle(db.Model):
+    __tablename__ = "female_singles"
+
+    id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(120))
+    last_name = db.Column(db.String(120))
+    age = db.Column(db.Integer)
+    gender = db.Column(db.String(20))
+    location = db.Column(db.String(120))
+    notes = db.Column(db.Text)
+    phone_number = db.Column(db.String(50))
+
+    # Relationships
+    matches = db.relationship("Match", back_populates="female_single")
+
+    @property
+    def matchmakers(self):
+        return list({m.matchmaker for m in self.matches if m.matchmaker})
+
+    @property
+    def male_singles(self):
+        return list({m.male_single for m in self.matches if m.male_single})
+
+# Match Model
+class Match(db.Model):
+    __tablename__ = "matches"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    # Foreign keys
+    matchmaker_id = db.Column(db.Integer, db.ForeignKey("matchmakers.id"), nullable=False)
+    male_single_id = db.Column(db.Integer, db.ForeignKey("male_singles.id"), nullable=True)
+    female_single_id = db.Column(db.Integer, db.ForeignKey("female_singles.id"), nullable=True)
+
+    status = db.Column(db.String(50))  # e.g. "Introduced", "Scheduled", "Met", "Success", "Failed"
+    notes = db.Column(db.Text)
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    matchmaker = db.relationship("Matchmaker", back_populates="matches")
+    male_single = db.relationship("MaleSingle", back_populates="matches")
+    female_single = db.relationship("FemaleSingle", back_populates="matches")
