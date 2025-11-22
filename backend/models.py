@@ -1,11 +1,6 @@
 from datetime import datetime
-#from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
-#from flask_bcrypt import Bcrypt
 from extensions import db, bcrypt
-
-# db = SQLAlchemy()
-# bcrypt = Bcrypt()
 
 # User Model (login)
 class User(UserMixin, db.Model):

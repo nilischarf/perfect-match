@@ -37,8 +37,19 @@ def login():
         return jsonify({"error": "Invalid credentials"}), 401
 
     login_user(user)
-    return user_schema.jsonify(user)
+    return jsonify(user_schema.dump(user)), 200
 
+@auth_bp.route("/check_session", methods=["GET"])
+def check_session():
+    if current_user.is_authenticated:
+        return jsonify({
+            "logged_in": True,
+            "user": user_schema.dump(current_user)
+        }), 200
+
+    return jsonify({
+        "logged_in": False
+    }), 200
 
 @auth_bp.get("/logout")
 @login_required

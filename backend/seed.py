@@ -1,3 +1,8 @@
+from config import Config
+import os
+
+print("Seed script DB path:", os.path.abspath(Config.SQLALCHEMY_DATABASE_URI.replace("sqlite:///", "")))
+
 import random
 from app import create_app
 from extensions import db
