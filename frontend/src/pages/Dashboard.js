@@ -1,7 +1,7 @@
 import { apiFetch } from "../utils/api";
 import { useState, useEffect } from "react";
 
-export default function Dashboard({ user }) {
+function Dashboard({ user }) {
   const [matchmakers, setMatchmakers] = useState([]);
 
   useEffect(() => {
@@ -25,3 +25,5 @@ export default function Dashboard({ user }) {
     </div>
   );
 }
+
+export default Dashboard;

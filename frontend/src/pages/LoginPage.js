@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { apiFetch } from "../utils/api";
 
-export default function LoginPage({ onLogin }) {
+function LoginPage({ onLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -45,3 +45,5 @@ export default function LoginPage({ onLogin }) {
     </div>
   );
 }
+
+export default LoginPage;
