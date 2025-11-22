@@ -4,12 +4,17 @@ from extensions import db
 from models import MaleSingle
 from schemas import MaleSingleSchema
 
-male_singles_bp = Blueprint("male_singles", __name__)
+male_singles_bp = Blueprint(
+    "male_singles",
+    __name__,
+    url_prefix="/male_singles"
+)
+
 male_schema = MaleSingleSchema()
 male_list_schema = MaleSingleSchema(many=True)
 
 
-@male_singles_bp.get("/")
+@male_singles_bp.get("")   
 @login_required
 def get_all_male_singles():
     males = MaleSingle.query.all()
@@ -23,7 +28,7 @@ def get_male_single(id):
     return jsonify(male_schema.dump(male)), 200
 
 
-@male_singles_bp.post("/")
+@male_singles_bp.post("")   
 @login_required
 def create_male_single():
     data = request.json

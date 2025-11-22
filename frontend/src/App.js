@@ -7,10 +7,10 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
-// import MatchmakersPage from "./pages/MatchmakersPage";
-// import MatchmakerDetailPage from "./pages/MatchmakerDetailPage";
-// import MaleSinglesPage from "./pages/MaleSinglesPage";
-// import FemaleSinglesPage from "./pages/FemaleSinglesPage";
+import MatchmakersPage from "./pages/MatchmakersPage";
+import MatchmakerDetailPage from "./pages/MatchmakerDetailPage";
+import MaleSinglesPage from "./pages/MaleSinglesPage";
+import FemaleSinglesPage from "./pages/FemaleSinglesPage";
 
 import { checkSessionApi, logoutApi } from "./utils/api";
 
@@ -63,15 +63,15 @@ function App() {
           <Route
             path="/login"
             element={
-              // user ? (
-              //   <Navigate to="/" replace />
-              // ) : (
+              user ? (
+                <Navigate to="/" replace />
+              ) : (
                 <LoginPage onLogin={setUser} />
-              // )
+              )
             }
           />
 
-          {/* Protected routes
+          {/* Protected routes */}
           <Route
             path="/matchmakers"
             element={
@@ -87,8 +87,7 @@ function App() {
                 <MatchmakerDetailPage />
               </ProtectedRoute>
             }
-          />
-
+          /> 
           <Route
             path="/male-singles"
             element={
@@ -97,7 +96,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/female-singles"
             element={
@@ -106,9 +104,8 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           {/* 404 */}
-          {/* <Route path="*" element={<div>Page not found</div>} /> */} 
+          <Route path="*" element={<div>Page not found</div>} /> 
         </Routes>
       </main>
     </div>

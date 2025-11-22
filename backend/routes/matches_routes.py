@@ -4,12 +4,17 @@ from extensions import db
 from models import Match
 from schemas import MatchSchema
 
-matches_bp = Blueprint("matches", __name__)
+matches_bp = Blueprint(
+    "matches",
+    __name__,
+    url_prefix="/matches"
+)
+
 match_schema = MatchSchema()
 match_list_schema = MatchSchema(many=True)
 
 
-@matches_bp.get("/")
+@matches_bp.get("")  
 @login_required
 def get_matches():
     matches = Match.query.all()
@@ -23,7 +28,7 @@ def get_match(id):
     return jsonify(match_schema.dump(match)), 200
 
 
-@matches_bp.post("/")
+@matches_bp.post("")   
 @login_required
 def create_match():
     data = request.json

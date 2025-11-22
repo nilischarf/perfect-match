@@ -4,12 +4,12 @@ from extensions import db
 from models import Matchmaker
 from schemas import MatchmakerSchema
 
-matchmakers_bp = Blueprint("matchmakers", __name__)
+matchmakers_bp = Blueprint("matchmakers", __name__, url_prefix="/matchmakers")
 matchmaker_schema = MatchmakerSchema()
 matchmaker_list_schema = MatchmakerSchema(many=True)
 
 
-@matchmakers_bp.get("/")
+@matchmakers_bp.get("")
 @login_required
 def get_matchmakers():
     matchmakers = Matchmaker.query.all()
@@ -23,7 +23,7 @@ def get_matchmaker(id):
     return jsonify(matchmaker_schema.dump(matchmaker)), 200
 
 
-@matchmakers_bp.post("/")
+@matchmakers_bp.post("")
 @login_required
 def create_matchmaker():
     data = request.json

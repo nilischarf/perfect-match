@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify  
 from flask_cors import CORS
 
 from config import Config
@@ -16,23 +16,26 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # Enable CORS for frontend React dev server
-    CORS(app, supports_credentials=True)
+    CORS(app,
+     supports_credentials=True,
+     origins=["http://localhost:3000"])
 
-    # Initialize extensions
     db.init_app(app)
     ma.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)
 
+    login_manager.login_view = None
+
+    @login_manager.unauthorized_handler
+    def unauthorized():
+        return jsonify({"error": "Unauthorized"}), 401
+
     from models import User, Matchmaker, MaleSingle, FemaleSingle, Match
 
-    # Setup Flask-Login loader
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(int(user_id))
-
-    login_manager.login_view = "auth.login"
 
     # Register blueprints
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
@@ -46,7 +49,6 @@ def create_app():
 
     return app
 
-
 if __name__ == "__main__":
     app = create_app()
-    app.run(debug=True)
+    app.run(debug=True, port=5001)

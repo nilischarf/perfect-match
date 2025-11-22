@@ -1,47 +1,68 @@
-import { useState } from "react";
-import { apiFetch } from "../utils/api";
+import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { loginApi } from "../utils/api";
 
 function LoginPage({ onLogin }) {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [username, setUsername] = useState("admin");
+  const [password, setPassword] = useState("password123");
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const from = location.state?.from?.pathname || "/";
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setError("");
+    setLoading(true);
+    setError(null);
 
     try {
-      const res = await apiFetch("/auth/login", {
-        method: "POST",
-        body: JSON.stringify({ username, password })
-      });
-      onLogin(res.user);
+      const data = await loginApi({ username, password });
+      onLogin(data.user);
+      navigate(from, { replace: true });
     } catch (err) {
-      setError(err.data.error || "Login failed");
+      console.error(err);
+      setError(err.data?.error || "Login failed");
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
     <div>
-      <h1>PerfectMatch Login</h1>
+      <h1>Login</h1>
+      {error && <div style={{ color: "red" }}>{error}</div>}
 
-      <form onSubmit={handleSubmit}>
-        <input 
-          value={username} 
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Username"
-        />
-        <input 
-          type="password"
-          value={password} 
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-        />
+      <form onSubmit={handleSubmit} style={{ maxWidth: 300 }}>
+        <div>
+          <label>
+            Username
+            <input
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              autoComplete="username"
+            />
+          </label>
+        </div>
 
-        <button type="submit">Login</button>
+        <div>
+          <label>
+            Password
+            <input
+              type="password"
+              value={password}
+              autoComplete="current-password"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </label>
+        </div>
+
+        <button type="submit" disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
+        </button>
       </form>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
 }
