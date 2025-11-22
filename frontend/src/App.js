@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import NavBar from "./components/NavBar";
-// import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./components/ProtectedRoute";
 
-// import HomePage from "./pages/HomePage";
+import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 // import MatchmakersPage from "./pages/MatchmakersPage";
 // import MatchmakerDetailPage from "./pages/MatchmakerDetailPage";
@@ -58,7 +58,7 @@ function App() {
 
       <main className="main-content">
         <Routes>
-          {/* <Route path="/" element={<HomePage user={user} />} /> */}
+          <Route path="/" element={<HomePage user={user} />} />
 
           <Route
             path="/login"
