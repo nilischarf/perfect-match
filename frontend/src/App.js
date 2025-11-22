@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
-// import NavBar from "./components/NavBar";
+import NavBar from "./components/NavBar";
 // import ProtectedRoute from "./components/ProtectedRoute";
 
 // import HomePage from "./pages/HomePage";
@@ -54,7 +54,7 @@ function App() {
 
   return (
     <div className="App">
-      {/* <NavBar user={user} onLogout={handleLogout} /> */}
+      <NavBar user={user} onLogout={handleLogout} />
 
       <main className="main-content">
         <Routes>
