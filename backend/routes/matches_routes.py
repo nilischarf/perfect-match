@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from flask_login import login_required
 from extensions import db
 from models import Match
@@ -12,14 +12,15 @@ match_list_schema = MatchSchema(many=True)
 @matches_bp.get("/")
 @login_required
 def get_matches():
-    return match_list_schema.jsonify(Match.query.all())
+    matches = Match.query.all()
+    return jsonify(match_list_schema.dump(matches)), 200
 
 
 @matches_bp.get("/<int:id>")
 @login_required
 def get_match(id):
     match = Match.query.get_or_404(id)
-    return match_schema.jsonify(match)
+    return jsonify(match_schema.dump(match)), 200
 
 
 @matches_bp.post("/")
@@ -29,7 +30,7 @@ def create_match():
     match = Match(**data)
     db.session.add(match)
     db.session.commit()
-    return match_schema.jsonify(match), 201
+    return jsonify(match_schema.dump(match)), 201
 
 
 @matches_bp.patch("/<int:id>")
@@ -42,4 +43,4 @@ def update_match(id):
         setattr(match, key, value)
 
     db.session.commit()
-    return match_schema.jsonify(match)
+    return jsonify(match_schema.dump(match)), 200

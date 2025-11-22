@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from flask_login import login_required
 from extensions import db
 from models import FemaleSingle
@@ -12,14 +12,15 @@ female_list_schema = FemaleSingleSchema(many=True)
 @female_singles_bp.get("/")
 @login_required
 def get_female_singles():
-    return female_list_schema.jsonify(FemaleSingle.query.all())
+    females = FemaleSingle.query.all()
+    return jsonify(female_list_schema.dump(females)), 200
 
 
 @female_singles_bp.get("/<int:id>")
 @login_required
 def get_female_single(id):
     female = FemaleSingle.query.get_or_404(id)
-    return female_schema.jsonify(female)
+    return jsonify(female_schema.dump(female)), 200
 
 
 @female_singles_bp.post("/")
@@ -29,4 +30,4 @@ def create_female_single():
     female = FemaleSingle(**data)
     db.session.add(female)
     db.session.commit()
-    return female_schema.jsonify(female), 201
+    return jsonify(female_schema.dump(female)), 201

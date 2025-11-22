@@ -15,16 +15,20 @@ def signup():
     username = data.get("username")
     password = data.get("password")
 
+    if not username or not password:
+        return jsonify({"error": "Username and password are required"}), 400
+
+    # Check if username already exists
     if User.query.filter_by(username=username).first():
         return jsonify({"error": "Username already exists"}), 400
 
+    # Create user
     user = User(username=username)
     user.password = password
     db.session.add(user)
     db.session.commit()
 
-    return user_schema.jsonify(user)
-
+    return jsonify(user_schema.dump(user)), 201
 
 @auth_bp.post("/login")
 def login():
@@ -33,11 +37,16 @@ def login():
     password = data.get("password")
 
     user = User.query.filter_by(username=username).first()
+
     if not user or not user.check_password(password):
         return jsonify({"error": "Invalid credentials"}), 401
 
     login_user(user)
-    return jsonify(user_schema.dump(user)), 200
+
+    return jsonify({
+        "message": "Login successful",
+        "user": user_schema.dump(user)
+    }), 200
 
 @auth_bp.route("/check_session", methods=["GET"])
 def check_session():

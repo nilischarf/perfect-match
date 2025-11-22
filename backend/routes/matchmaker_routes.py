@@ -13,14 +13,14 @@ matchmaker_list_schema = MatchmakerSchema(many=True)
 @login_required
 def get_matchmakers():
     matchmakers = Matchmaker.query.all()
-    return matchmaker_list_schema.jsonify(matchmakers)
+    return jsonify(matchmaker_list_schema.dump(matchmakers)), 200
 
 
 @matchmakers_bp.get("/<int:id>")
 @login_required
 def get_matchmaker(id):
     matchmaker = Matchmaker.query.get_or_404(id)
-    return matchmaker_schema.jsonify(matchmaker)
+    return jsonify(matchmaker_schema.dump(matchmaker)), 200
 
 
 @matchmakers_bp.post("/")
@@ -30,4 +30,4 @@ def create_matchmaker():
     matchmaker = Matchmaker(**data)
     db.session.add(matchmaker)
     db.session.commit()
-    return matchmaker_schema.jsonify(matchmaker), 201
+    return jsonify(matchmaker_schema.dump(matchmaker)), 201
