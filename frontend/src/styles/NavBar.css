@@ -1,0 +1,37 @@
+.navbar {
+  background: var(--maroon);
+  color: var(--white);
+  padding: 0.8rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar a {
+  color: var(--white);
+  margin-right: 1rem;
+}
+
+.navbar a:hover {
+  color: var(--gold);
+}
+
+.navbar-username {
+  margin-right: 1rem;
+  font-weight: bold;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.navbar button {
+  background: var(--gold);
+  color: var(--white);
+}
+
+.navbar button:hover {
+  background: var(--rose-light);
+  color: var(--maroon);
+}

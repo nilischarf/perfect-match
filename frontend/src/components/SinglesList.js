@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import SingleDetail from "./SingleDetail";
+import "../styles/SinglesList.css";
 
 function SinglesList({ singles, type }) {
   const [selected, setSelected] = useState(null);

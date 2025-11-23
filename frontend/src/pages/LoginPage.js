@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { loginApi } from "../utils/api";
+import "../styles/LoginPage.css";
 
 function LoginPage({ onLogin }) {
   const [username, setUsername] = useState("admin");

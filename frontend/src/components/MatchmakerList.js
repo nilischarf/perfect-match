@@ -1,4 +1,5 @@
 import React from "react";
+import "../styles/MatchmakerList.css";
 
 function MatchmakerList({ matchmakers, onSelect }) {
   if (!matchmakers.length) {

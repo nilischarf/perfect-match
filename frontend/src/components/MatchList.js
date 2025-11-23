@@ -1,4 +1,5 @@
 import React from "react";
+import "../styles/MatchList.css";
 
 function MatchList({ matches }) {
   if (!matches.length) return <p>No matches yet.</p>;

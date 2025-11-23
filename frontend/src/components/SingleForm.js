@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "../styles/SingleForm.css";
 
 function SingleForm({ onSubmit, defaultGender }) {
   const [firstName, setFirstName] = useState("");

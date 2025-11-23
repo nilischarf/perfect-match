@@ -1,5 +1,6 @@
 import React from "react";
 import { Navigate, useLocation } from "react-router-dom";
+import "../styles/ProtectedRoute.css";
 
 function ProtectedRoute({ user, children }) {
   const location = useLocation();

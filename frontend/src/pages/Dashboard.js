@@ -1,5 +1,6 @@
 import { apiFetch } from "../utils/api";
 import { useState, useEffect } from "react";
+import "../styles/Dashboard.css";
 
 function Dashboard({ user }) {
   const [matchmakers, setMatchmakers] = useState([]);

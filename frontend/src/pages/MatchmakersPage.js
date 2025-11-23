@@ -5,6 +5,7 @@ import {
   createMatchmaker
 } from "../utils/api";
 import MatchmakerList from "../components/MatchmakerList";
+import "../styles/MatchmakersPage.css";
 
 function MatchmakersPage() {
   const [matchmakers, setMatchmakers] = useState([]);

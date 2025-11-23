@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { fetchMaleSingles, createMaleSingle } from "../utils/api";
 import SinglesList from "../components/SinglesList";
 import SingleForm from "../components/SingleForm";
+import "../styles/MaleSinglesPage.css";
 
 function MaleSinglesPage() {
   const [singles, setSingles] = useState([]);

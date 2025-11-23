@@ -1,5 +1,6 @@
 import React from "react";
 import MatchList from "./MatchList";
+import "../styles/MatchmakerDetail.css";
 
 function MatchmakerDetail({ matchmaker }) {
   return (

@@ -1,6 +1,7 @@
 // src/App.js
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
+import "./App.css";
 
 import NavBar from "./components/NavBar";
 import ProtectedRoute from "./components/ProtectedRoute";

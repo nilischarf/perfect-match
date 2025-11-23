@@ -1,5 +1,6 @@
 import React from "react";
 import MatchList from "./MatchList";
+import "../styles/SingleDetail.css";
 
 function SingleDetail({ single, type }) {
   return (

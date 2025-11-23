@@ -1,0 +1,21 @@
+.singles-layout {
+  display: flex;
+  align-items: flex-start;
+}
+
+.singles-layout ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.singles-layout li {
+  margin-bottom: 6px;
+}
+
+.singles-layout button {
+  background: var(--rose-dark);
+}
+
+.singles-layout button:hover {
+  background: var(--maroon);
+}
