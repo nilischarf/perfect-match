@@ -1,21 +1,23 @@
 .singles-layout {
   display: flex;
-  align-items: flex-start;
+  gap: 2rem;
 }
 
-.singles-layout ul {
-  list-style: none;
-  padding-left: 0;
+.singles-layout > ul {
+  max-width: 260px;
 }
 
-.singles-layout li {
-  margin-bottom: 6px;
+/* List buttons already use global button styling */
+.singles-layout ul li button {
+  width: 100%;
+  text-align: left;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #f7c9dd;
+  color: #4b2c3b;
 }
 
-.singles-layout button {
-  background: var(--rose-dark);
-}
-
-.singles-layout button:hover {
-  background: var(--maroon);
+/* Detail pane spacing */
+.singles-layout > div {
+  flex: 1;
 }

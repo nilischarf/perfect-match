@@ -1,11 +1,7 @@
-.match-list {
-  padding-left: 1rem;
-}
-
 .match-list li {
-  background: var(--white);
+  background: var(--card);
   padding: 1rem;
-  margin-bottom: 1rem;
   border-radius: var(--radius);
+  margin-bottom: 1rem;
   box-shadow: var(--shadow);
 }

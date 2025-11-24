@@ -1,7 +1,7 @@
 .login-container {
-  max-width: 350px;
-  margin: 3rem auto;
-  background: var(--white);
+  max-width: 380px;
+  margin: 4rem auto;
+  background: var(--card);
   padding: 2rem;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
@@ -9,6 +9,7 @@
 
 .login-container h1 {
   text-align: center;
+  margin-bottom: 1.5rem;
 }
 
 .login-container button {

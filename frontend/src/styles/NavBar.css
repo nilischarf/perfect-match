@@ -1,37 +1,58 @@
 .navbar {
-  background: var(--maroon);
-  color: var(--white);
-  padding: 0.8rem 1.5rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: linear-gradient(120deg, #ff6fa8, #ff4f8d);
+  padding: 0.7rem 1.6rem;
+  color: white;
+  box-shadow: 0 6px 18px rgba(229, 57, 127, 0.5);
 }
 
-.navbar a {
-  color: var(--white);
-  margin-right: 1rem;
-}
-
-.navbar a:hover {
-  color: var(--gold);
-}
-
-.navbar-username {
-  margin-right: 1rem;
-  font-weight: bold;
+.navbar-brand {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #ffffff;
+  text-decoration: none;
 }
 
 .navbar-links {
   display: flex;
-  gap: 1rem;
+  align-items: center;
+  gap: 0.75rem;
 }
 
+.navbar-links a {
+  color: #ffe8f2;
+  font-weight: 500;
+  font-size: 0.96rem;
+}
+
+.navbar-links a:hover {
+  text-decoration: underline;
+}
+
+.navbar-auth {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.navbar-username {
+  color: #fffbfd;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+/* Reuse global button but tweak slightly in navbar */
 .navbar button {
-  background: var(--gold);
-  color: var(--white);
-}
-
-.navbar button:hover {
-  background: var(--rose-light);
-  color: var(--maroon);
+  padding: 0.35rem 1rem;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.4);
+  background: #ffffff;
+  color: #e91e63;
 }

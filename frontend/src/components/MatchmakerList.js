@@ -7,7 +7,7 @@ function MatchmakerList({ matchmakers, onSelect }) {
   }
 
   return (
-    <ul>
+    <ul className="matchmaker-list">
       {matchmakers.map((mk) => (
         <li key={mk.id}>
           <button type="button" onClick={() => onSelect(mk.id)}>

@@ -32,7 +32,7 @@ function SingleForm({ onSubmit, defaultGender }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: 400 }}>
+    <form onSubmit={handleSubmit} className="single-form">
       <div>
         <label>
           First Name

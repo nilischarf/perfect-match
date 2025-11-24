@@ -159,7 +159,6 @@
   flex: 1;
   min-height: 0;
   border-radius: var(--radius-lg);
-  background: radial-gradient(circle at top, rgba(148, 163, 184, 0.15), #020617);
   border: 1px solid rgba(148, 163, 184, 0.15);
   box-shadow: var(--shadow-soft);
   padding: 1rem 1.1rem 1.2rem;

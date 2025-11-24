@@ -1,19 +1,15 @@
-.matchmaker-list ul {
-  list-style: none;
-  padding-left: 0;
-}
-
-.matchmaker-list li {
-  margin-bottom: 8px;
-}
-
 .matchmaker-list button {
-  background: var(--rose-dark);
-  padding: 6px 12px;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  background: #fff;
+  border: 1px solid #f8c9d8;
+  padding: 0.7rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s ease;
 }
 
 .matchmaker-list button:hover {
-  background: var(--maroon);
+  background: #ffe0ec;
+  border-color: #ff4081;
+  transform: translateX(4px);
 }

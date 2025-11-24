@@ -1,7 +1,11 @@
 .single-form {
-  max-width: 400px;
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 6px 14px rgba(255, 64, 129, 0.1);
 }
 
-.single-form button {
-  margin-top: 10px;
+.single-form label {
+  font-weight: 600;
+  color: #c2185b;
 }
