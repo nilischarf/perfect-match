@@ -11,7 +11,7 @@ root.render(
   </BrowserRouter>
 );
 
-// 💗 Pink heart cursor trail
+// Pink heart cursor trail
 document.addEventListener("pointermove", (e) => {
   const heart = document.createElement("div");
   heart.className = "heart-trail-item";
