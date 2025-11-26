@@ -504,4 +504,24 @@
     flex-direction: column;
     align-items: flex-start;
   }
+
+  .delete-btn {
+    background: #ff5c8a;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .delete-btn:hover {
+    background: #e84574;
+    transform: scale(1.05);
+  }
+
+  .delete-btn:active {
+    transform: scale(0.96);
+  }
 }

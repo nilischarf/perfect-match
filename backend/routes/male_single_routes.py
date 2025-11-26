@@ -8,6 +8,7 @@ male_singles_bp = Blueprint("male_singles", __name__, url_prefix="/male_singles"
 male_schema = MaleSingleSchema()
 male_list_schema = MaleSingleSchema(many=True)
 
+
 @male_singles_bp.get("")
 @login_required
 def get_all_male_singles():

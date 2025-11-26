@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import "../styles/SingleForm.css";
 
 function SingleForm({ onSubmit, defaultGender }) {
+  const [formError, setFormError] = useState("");
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [age, setAge] = useState("");
@@ -12,6 +14,12 @@ function SingleForm({ onSubmit, defaultGender }) {
 
   function handleSubmit(e) {
     e.preventDefault();
+
+    if (!firstName || !lastName || !age || Number(age) < 18 || !gender) {
+      return setFormError("⚠ Please fill all required fields. Age must be 18+.");
+    }
+
+    setFormError("");
 
     onSubmit({
       first_name: firstName,
@@ -33,83 +41,17 @@ function SingleForm({ onSubmit, defaultGender }) {
 
   return (
     <form onSubmit={handleSubmit} className="single-form">
-      <div>
-        <label>
-          First Name
-          <input
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            required
-          />
-        </label>
-      </div>
+      {formError && <p className="error-alert">{formError}</p>}
 
-      <div>
-        <label>
-          Last Name
-          <input
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            required
-          />
-        </label>
-      </div>
+      <label>First Name<input value={firstName} onChange={(e)=>setFirstName(e.target.value)} required /></label>
+      <label>Last Name<input value={lastName} onChange={(e)=>setLastName(e.target.value)} required /></label>
+      <label>Age<input type="number" min="18" value={age} onChange={(e)=>setAge(e.target.value)} required /></label>
+      <label>Gender<input value={gender} onChange={(e)=>setGender(e.target.value)} required /></label>
+      <label>Location<input value={location} onChange={(e)=>setLocation(e.target.value)} /></label>
+      <label>Phone<input value={phoneNumber} onChange={(e)=>setPhoneNumber(e.target.value)} /></label>
+      <label>Notes<textarea value={notes} onChange={(e)=>setNotes(e.target.value)} /></label>
 
-      <div>
-        <label>
-          Age
-          <input
-            type="number"
-            value={age}
-            onChange={(e) => setAge(e.target.value)}
-            required
-            min="18"
-          />
-        </label>
-      </div>
-
-      <div>
-        <label>
-          Gender
-          <input
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
-            required
-          />
-        </label>
-      </div>
-
-      <div>
-        <label>
-          Location
-          <input
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-          />
-        </label>
-      </div>
-
-      <div>
-        <label>
-          Phone Number
-          <input
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-          />
-        </label>
-      </div>
-
-      <div>
-        <label>
-          Notes
-          <textarea
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-          />
-        </label>
-      </div>
-
-      <button type="submit">Save</button>
+      <button type="submit">💖 Save</button>
     </form>
   );
 }

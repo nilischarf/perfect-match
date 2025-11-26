@@ -8,10 +8,12 @@ matchmakers_bp = Blueprint("matchmakers", __name__, url_prefix="/matchmakers")
 matchmaker_schema = MatchmakerSchema()
 matchmaker_list_schema = MatchmakerSchema(many=True)
 
+
 @matchmakers_bp.get("")
 @login_required
 def get_matchmakers():
     return jsonify(matchmaker_list_schema.dump(Matchmaker.query.all())), 200
+
 
 @matchmakers_bp.get("/<int:id>")
 @login_required
@@ -20,6 +22,7 @@ def get_matchmaker(id):
     if not mk:
         return jsonify({"error": "Matchmaker not found"}), 404
     return jsonify(matchmaker_schema.dump(mk)), 200
+
 
 @matchmakers_bp.post("")
 @login_required
@@ -36,6 +39,7 @@ def create_matchmaker():
     db.session.commit()
     return jsonify(matchmaker_schema.dump(mk)), 201
 
+
 @matchmakers_bp.patch("/<int:id>")
 @login_required
 def update_matchmaker(id):
@@ -49,6 +53,7 @@ def update_matchmaker(id):
 
     db.session.commit()
     return jsonify(matchmaker_schema.dump(mk)), 200
+
 
 @matchmakers_bp.delete("/<int:id>")
 @login_required
