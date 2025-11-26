@@ -8,26 +8,55 @@ matchmakers_bp = Blueprint("matchmakers", __name__, url_prefix="/matchmakers")
 matchmaker_schema = MatchmakerSchema()
 matchmaker_list_schema = MatchmakerSchema(many=True)
 
-
 @matchmakers_bp.get("")
 @login_required
 def get_matchmakers():
-    matchmakers = Matchmaker.query.all()
-    return jsonify(matchmaker_list_schema.dump(matchmakers)), 200
-
+    return jsonify(matchmaker_list_schema.dump(Matchmaker.query.all())), 200
 
 @matchmakers_bp.get("/<int:id>")
 @login_required
 def get_matchmaker(id):
-    matchmaker = Matchmaker.query.get_or_404(id)
-    return jsonify(matchmaker_schema.dump(matchmaker)), 200
-
+    mk = Matchmaker.query.get(id)
+    if not mk:
+        return jsonify({"error": "Matchmaker not found"}), 404
+    return jsonify(matchmaker_schema.dump(mk)), 200
 
 @matchmakers_bp.post("")
 @login_required
 def create_matchmaker():
-    data = request.json
-    matchmaker = Matchmaker(**data)
-    db.session.add(matchmaker)
+    data = request.json or {}
+
+    required = ["name", "location"]
+    missing = [f for f in required if not data.get(f)]
+    if missing:
+        return jsonify({"error": f"Missing required fields: {', '.join(missing)}"}), 400
+
+    mk = Matchmaker(**data)
+    db.session.add(mk)
     db.session.commit()
-    return jsonify(matchmaker_schema.dump(matchmaker)), 201
+    return jsonify(matchmaker_schema.dump(mk)), 201
+
+@matchmakers_bp.patch("/<int:id>")
+@login_required
+def update_matchmaker(id):
+    mk = Matchmaker.query.get(id)
+    if not mk:
+        return jsonify({"error": "Matchmaker not found"}), 404
+
+    for key, val in (request.json or {}).items():
+        if hasattr(mk, key):
+            setattr(mk, key, val)
+
+    db.session.commit()
+    return jsonify(matchmaker_schema.dump(mk)), 200
+
+@matchmakers_bp.delete("/<int:id>")
+@login_required
+def delete_matchmaker(id):
+    mk = Matchmaker.query.get(id)
+    if not mk:
+        return jsonify({"error": "Matchmaker not found"}), 404
+
+    db.session.delete(mk)
+    db.session.commit()
+    return jsonify({"message": "Matchmaker deleted"}), 200
