@@ -12,7 +12,10 @@ function MatchmakerDetail({ matchmaker }) {
       <p>Salary: {matchmaker.salary ?? "N/A"}</p>
 
       <h2>Matches</h2>
-      <MatchList matches={matchmaker.matches || []} />
+      <MatchList
+        matches={matchmaker.matches || []}
+        refresh={() => window.location.reload()}
+      />
     </div>
   );
 }

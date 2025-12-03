@@ -15,7 +15,10 @@ function SingleDetail({ single, type }) {
       {single.notes && <p>Notes: {single.notes}</p>}
 
       <h3>Matches for this {type === "male" ? "man" : "woman"}</h3>
-      <MatchList matches={single.matches || []} />
+      <MatchList
+        matches={single.matches || []}
+        refresh={() => window.location.reload()}
+      />
     </div>
   );
 }

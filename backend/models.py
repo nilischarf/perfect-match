@@ -44,7 +44,7 @@ class Matchmaker(db.Model):
 
     # Relationships
     user = db.relationship("User", back_populates="matchmakers")
-    matches = db.relationship("Match", back_populates="matchmaker")
+    matches = db.relationship("Match", back_populates="matchmaker", cascade="all, delete-orphan" )
 
     # Through-relationships (not real tables, but accessors)
     @property
@@ -69,7 +69,7 @@ class MaleSingle(db.Model):
     phone_number = db.Column(db.String(50))
 
     # Relationships
-    matches = db.relationship("Match", back_populates="male_single")
+    matches = db.relationship("Match", back_populates="male_single", cascade="all, delete-orphan")
 
     @property
     def matchmakers(self):
@@ -93,7 +93,7 @@ class FemaleSingle(db.Model):
     phone_number = db.Column(db.String(50))
 
     # Relationships
-    matches = db.relationship("Match", back_populates="female_single")
+    matches = db.relationship("Match", back_populates="female_single", cascade="all, delete-orphan")
 
     @property
     def matchmakers(self):

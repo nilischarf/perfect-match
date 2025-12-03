@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { apiFetch } from "../utils/api";
 import { fetchFemaleSingles, createFemaleSingle } from "../utils/api";
 import SinglesList from "../components/SinglesList";
 import SingleForm from "../components/SingleForm";
@@ -37,13 +38,24 @@ function FemaleSinglesPage() {
     }
   }
 
+  async function handleDelete(id) {
+    if (!window.confirm("Delete this female single?")) return;
+
+    try {
+      await apiFetch(`/female_singles/${id}`, { method: "DELETE" });
+      setSingles(prev => prev.filter(s => s.id !== id));
+    } catch (err) {
+      alert(err?.data?.error || "Delete failed");
+    }
+  }
+
   if (loading) return <div>Loading female singles...</div>;
   if (error) return <div>{error}</div>;
 
   return (
     <div>
       <h1>Female Singles</h1>
-      <SinglesList singles={singles} type="female" />
+      <SinglesList singles={singles} type="female" onDelete={handleDelete} />
       <h2>Add Female Single</h2>
       <SingleForm onSubmit={handleCreateSingle} defaultGender="Female" />
     </div>

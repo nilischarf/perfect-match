@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { apiFetch } from "../utils/api";
 import { useNavigate } from "react-router-dom";
 import {
   fetchMatchmakers,
@@ -49,6 +50,18 @@ function MatchmakersPage() {
     }
   }
 
+  async function handleDelete(id) {
+    if (!window.confirm("Delete this matchmaker?")) return;
+
+    try {
+      await apiFetch(`/matchmakers/${id}`, { method: "DELETE" });
+      setMatchmakers(prev => prev.filter(m => m.id !== id));
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete matchmaker");
+    }
+  }
+
   if (loading) return <div>Loading matchmakers...</div>;
   if (error) return <div>{error}</div>;
 
@@ -59,6 +72,7 @@ function MatchmakersPage() {
       <MatchmakerList
         matchmakers={matchmakers}
         onSelect={(id) => navigate(`/matchmakers/${id}`)}
+        onDelete={handleDelete}
       />
 
       <h2>Add Matchmaker</h2>

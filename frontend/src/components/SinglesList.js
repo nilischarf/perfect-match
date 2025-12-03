@@ -1,46 +1,36 @@
 import React, { useState } from "react";
 import SingleDetail from "./SingleDetail";
 import "../styles/SinglesList.css";
-import { apiFetch } from "../utils/api";
 
-function SinglesList({ singles, type, refresh }) {
+function SinglesList({ singles, type, onDelete }) {
   const [selected, setSelected] = useState(null);
-  const [msg, setMsg] = useState("");
-
-  async function handleDelete(id) {
-    if (!window.confirm(`Delete this ${type}?`)) return;
-
-    try {
-      await apiFetch(`/${type === "male" ? "male_singles" : "female_singles"}/${id}`, { method:"DELETE" });
-      setMsg(`${type} deleted ✔`);
-      refresh && refresh();
-    } catch(err){
-      alert(err.data?.error || "Failed to delete");
-    } finally {
-      setTimeout(()=>setMsg(""),2000);
-    }
-  }
 
   return (
     <div className="singles-layout">
-      {msg && <div className="success-banner">{msg}</div>}
-
       <ul>
         {singles.map((s) => (
-          <li key={s.id}>
-            <button onClick={() => setSelected(s)}>
+          <li key={s.id} className="single-row">
+            <button type="button" onClick={() => setSelected(s)}>
               {s.first_name} {s.last_name} ({s.age})
             </button>
 
-            <button className="delete-btn" onClick={() => handleDelete(s.id)}>
-              🗑 Delete
+            {/* Delete button on the right */}
+            <button
+              className="delete-btn"
+              onClick={() => onDelete(s.id)}
+            >
+              🗑️
             </button>
           </li>
         ))}
       </ul>
 
-      <div className="detail-panel">
-        {selected ? <SingleDetail single={selected} type={type} /> : <p>Select one to view details</p>}
+      <div style={{ marginLeft: "2rem" }}>
+        {selected ? (
+          <SingleDetail single={selected} type={type} />
+        ) : (
+          <p>Select a {type} to view details and matches.</p>
+        )}
       </div>
     </div>
   );
