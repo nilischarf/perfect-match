@@ -61,7 +61,6 @@ def delete_male_single(id):
     m = MaleSingle.query.get(id)
     if not m:
         return jsonify({"error": "Male single not found"}), 404
-
     db.session.delete(m)
     db.session.commit()
     return jsonify({"message": "Male single deleted"}), 200

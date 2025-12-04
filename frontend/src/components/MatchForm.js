@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "../styles/MatchForm.css";
+import '../styles/MatchForm.css'
 
 function MatchForm({ initialValues, males, females, onSubmit }) {
   const [form, setForm] = useState(initialValues);
