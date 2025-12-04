@@ -94,7 +94,7 @@ class FemaleSingle(db.Model):
 
     # Relationships
     matches = db.relationship("Match", back_populates="female_single", cascade="all, delete-orphan")
-
+    # secondary relationships instead of properties 
     @property
     def matchmakers(self):
         return list({m.matchmaker for m in self.matches if m.matchmaker})
