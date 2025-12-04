@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/MatchList.css";
 import DeleteButton from "./DeleteButton";
 import { apiFetch } from "../utils/api";
 
 function MatchList({ matches, refresh }) {
+  const navigate = useNavigate();   // ✅ FIXED: define navigate
   const [deleting, setDeleting] = useState(null);
   const [msg, setMsg] = useState("");
 
@@ -29,26 +31,20 @@ function MatchList({ matches, refresh }) {
     <div>
       {msg && <div className="success-banner">{msg}</div>}
 
-      <ul>
+      <ul className="match-list">
         {matches.map((m) => (
-          <li key={m.id} className="match-item">
-            <p><strong>Status:</strong> {m.status || "N/A"}</p>
-            <p>
-              <strong>Male:</strong>{" "}
-              {m.male_single
-                ? `${m.male_single.first_name} ${m.male_single.last_name}`
-                : "N/A"}
-            </p>
-            <p>
-              <strong>Female:</strong>{" "}
-              {m.female_single
-                ? `${m.female_single.first_name} ${m.female_single.last_name}`
-                : "N/A"}
-            </p>
+          <li key={m.id} className="match-row">
+            <div
+              className="match-summary"
+              onClick={() => navigate(`/matches/${m.id}`)} // 👈 now valid
+              style={{ cursor: "pointer" }}
+            >
+              <p><strong>Status:</strong> {m.status || "N/A"}</p>
+              <p><strong>Male:</strong> {m.male_single ? `${m.male_single.first_name} ${m.male_single.last_name}` : "N/A"}</p>
+              <p><strong>Female:</strong> {m.female_single ? `${m.female_single.first_name} ${m.female_single.last_name}` : "N/A"}</p>
+              {m.notes && <em>{m.notes}</em>}
+            </div>
 
-            {m.notes && <em>{m.notes}</em>}
-
-            {/* FIXED: call handleDelete, not onDelete */}
             <DeleteButton onClick={() => handleDelete(m.id)} />
           </li>
         ))}

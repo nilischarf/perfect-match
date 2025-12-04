@@ -1,0 +1,65 @@
+.match-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  max-width: 450px;
+  padding: 1.5rem;
+  background: var(--card, #ffffff);
+  border-radius: 16px;
+  box-shadow: var(--shadow, 0 2px 8px rgba(0, 0, 0, 0.1));
+}
+
+/* Labels */
+.match-form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  color: #4b2c3b;
+}
+
+/* Inputs & selects */
+.match-form input,
+.match-form select,
+.match-form textarea {
+  margin-top: 0.4rem;
+  padding: 0.6rem 0.8rem;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: 1px solid #f7c9dd;
+  background: #fff;
+  color: #4b2c3b;
+  outline: none;
+  transition: border 0.2s ease;
+}
+
+.match-form input:focus,
+.match-form select:focus,
+.match-form textarea:focus {
+  border-color: #ff90c2;
+}
+
+/* Textarea */
+.match-form textarea {
+  resize: vertical;
+}
+
+/* Save button */
+.match-form .pink-button {
+  background: #ff90c2;
+  color: #4b2c3b;
+  border: none;
+  padding: 0.65rem 1rem;
+  border-radius: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.match-form .pink-button:hover {
+  background: #ff7ab5;
+}
+
+.match-form .pink-button:active {
+  transform: scale(0.97);
+}
