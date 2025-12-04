@@ -1,5 +1,5 @@
 // src/App.js
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 
@@ -12,6 +12,7 @@ import MatchmakersPage from "./pages/MatchmakersPage";
 import MatchmakerDetailPage from "./pages/MatchmakerDetailPage";
 import MaleSinglesPage from "./pages/MaleSinglesPage";
 import FemaleSinglesPage from "./pages/FemaleSinglesPage";
+import MatchEditPage from "./pages/MatchEditPage";
 
 import { checkSessionApi, logoutApi } from "./utils/api";
 
@@ -102,6 +103,14 @@ function App() {
             element={
               <ProtectedRoute user={user}>
                 <FemaleSinglesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/matches/:id/edit"
+            element={
+              <ProtectedRoute>
+                <MatchEditPage />
               </ProtectedRoute>
             }
           />
