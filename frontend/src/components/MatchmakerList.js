@@ -1,4 +1,4 @@
-import React from "react";
+import DeleteButton from "./DeleteButton";
 import "../styles/MatchmakerList.css";
 
 function MatchmakerList({ matchmakers, onSelect, onDelete }) {
@@ -15,10 +15,7 @@ function MatchmakerList({ matchmakers, onSelect, onDelete }) {
           >
             {mk.name} {mk.location ? `(${mk.location})` : ""}
           </button>
-
-          <button className="delete-btn" onClick={() => onDelete(mk.id)}>
-            🗑️
-          </button>
+          <DeleteButton onClick={() => onDelete(mk.id)} />
         </li>
       ))}
     </ul>

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "../styles/MatchList.css";
+import DeleteButton from "./DeleteButton";
 import { apiFetch } from "../utils/api";
 
 function MatchList({ matches, refresh }) {
@@ -30,19 +31,25 @@ function MatchList({ matches, refresh }) {
 
       <ul>
         {matches.map((m) => (
-          <li key={m.id}>
+          <li key={m.id} className="match-item">
             <p><strong>Status:</strong> {m.status || "N/A"}</p>
-            <p><strong>Male:</strong> {m.male_single ? `${m.male_single.first_name} ${m.male_single.last_name}` : "N/A"}</p>
-            <p><strong>Female:</strong> {m.female_single ? `${m.female_single.first_name} ${m.female_single.last_name}` : "N/A"}</p>
+            <p>
+              <strong>Male:</strong>{" "}
+              {m.male_single
+                ? `${m.male_single.first_name} ${m.male_single.last_name}`
+                : "N/A"}
+            </p>
+            <p>
+              <strong>Female:</strong>{" "}
+              {m.female_single
+                ? `${m.female_single.first_name} ${m.female_single.last_name}`
+                : "N/A"}
+            </p>
+
             {m.notes && <em>{m.notes}</em>}
 
-            <button
-              className="delete-btn"
-              disabled={deleting === m.id}
-              onClick={() => handleDelete(m.id)}
-            >
-              {deleting === m.id ? "Deleting..." : "🗑 Delete"}
-            </button>
+            {/* FIXED: call handleDelete, not onDelete */}
+            <DeleteButton onClick={() => handleDelete(m.id)} />
           </li>
         ))}
       </ul>

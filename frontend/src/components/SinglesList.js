@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import SingleDetail from "./SingleDetail";
+import DeleteButton from "./DeleteButton";
 import "../styles/SinglesList.css";
 
 function SinglesList({ singles, type, onDelete }) {
@@ -10,17 +11,15 @@ function SinglesList({ singles, type, onDelete }) {
       <ul>
         {singles.map((s) => (
           <li key={s.id} className="single-row">
-            <button type="button" onClick={() => setSelected(s)}>
+            <button
+              type="button"
+              onClick={() => setSelected(s)}
+              className="single-item"
+            >
               {s.first_name} {s.last_name} ({s.age})
             </button>
 
-            {/* Delete button on the right */}
-            <button
-              className="delete-btn"
-              onClick={() => onDelete(s.id)}
-            >
-              🗑️
-            </button>
+            <DeleteButton onClick={() => onDelete(s.id)} />
           </li>
         ))}
       </ul>

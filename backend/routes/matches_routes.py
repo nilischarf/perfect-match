@@ -43,16 +43,19 @@ def create_match():
 @matches_bp.patch("/<int:id>")
 @login_required
 def update_match(id):
-    m = Match.query.get(id)
-    if not m:
-        return jsonify({"error": "Match not found"}), 404
+    match = Match.query.get_or_404(id)
+    data = request.json or {}
 
-    for key, val in (request.json or {}).items():
-        if hasattr(m, key):
-            setattr(m, key, val)
+    # Allowed fields to update
+    allowed_fields = {"status", "male_id", "female_id", "notes"}
+
+    for key, value in data.items():
+        if key not in allowed_fields:
+            return jsonify({"error": f"Field '{key}' cannot be updated"}), 400
+        setattr(match, key, value)
 
     db.session.commit()
-    return jsonify(match_schema.dump(m)), 200
+    return jsonify(match_schema.dump(match)), 200
 
 
 @matches_bp.delete("/<int:id>")

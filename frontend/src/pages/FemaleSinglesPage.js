@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { apiFetch } from "../utils/api";
 import { fetchFemaleSingles, createFemaleSingle } from "../utils/api";
 import SinglesList from "../components/SinglesList";
