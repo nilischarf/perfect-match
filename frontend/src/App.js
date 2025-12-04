@@ -1,17 +1,18 @@
-// src/App.js
 import { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import "./App.css";
 
 import NavBar from "./components/NavBar";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
-import MatchmakersPage from "./pages/MatchmakersPage";
-import MatchmakerDetailPage from "./pages/MatchmakerDetailPage";
+import Dashboard from "./pages/Dashboard";
 import MaleSinglesPage from "./pages/MaleSinglesPage";
 import FemaleSinglesPage from "./pages/FemaleSinglesPage";
+import MatchmakersPage from "./pages/MatchmakersPage";
+import MatchmakerDetailPage from "./pages/MatchmakerDetailPage";
+
+import MatchDetailPage from "./pages/MatchDetailPage";
 import MatchEditPage from "./pages/MatchEditPage";
 
 import { checkSessionApi, logoutApi } from "./utils/api";
@@ -20,105 +21,107 @@ function App() {
   const [user, setUser] = useState(null);
   const [authLoaded, setAuthLoaded] = useState(false);
 
-  // Check session on first load
   useEffect(() => {
     async function check() {
       try {
         const data = await checkSessionApi();
-        if (data.logged_in) {
-          setUser(data.user);
-        } else {
-          setUser(null);
-        }
+        if (data.logged_in) setUser(data.user);
       } catch (err) {
-        console.error("Error checking session:", err);
         setUser(null);
       } finally {
         setAuthLoaded(true);
       }
     }
+
     check();
   }, []);
 
   async function handleLogout() {
-    try {
-      await logoutApi();
-    } catch (err) {
-      console.error("Logout failed", err);
-    } finally {
-      setUser(null);
-    }
+    await logoutApi();
+    setUser(null);
   }
 
-  if (!authLoaded) {
-    return <div className="loading">Loading...</div>;
-  }
+  if (!authLoaded) return <div>Loading...</div>;
 
   return (
-    <div className="App">
+    <>
       <NavBar user={user} onLogout={handleLogout} />
 
-      <main className="main-content">
-        <Routes>
-          <Route path="/" element={<HomePage user={user} />} />
+      <Routes>
 
-          <Route
-            path="/login"
-            element={
-              user ? (
-                <Navigate to="/" replace />
-              ) : (
-                <LoginPage onLogin={setUser} />
-              )
-            }
-          />
+        {/* PUBLIC ROUTES */}
+        <Route path="/login" element={<LoginPage setUser={setUser} />} />
+        <Route path="/" element={<HomePage />} />
 
-          {/* Protected routes */}
-          <Route
-            path="/matchmakers"
-            element={
-              <ProtectedRoute user={user}>
-                <MatchmakersPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/matchmakers/:id"
-            element={
-              <ProtectedRoute user={user}>
-                <MatchmakerDetailPage />
-              </ProtectedRoute>
-            }
-          /> 
-          <Route
-            path="/male-singles"
-            element={
-              <ProtectedRoute user={user}>
-                <MaleSinglesPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/female-singles"
-            element={
-              <ProtectedRoute user={user}>
-                <FemaleSinglesPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/matches/:id/edit"
-            element={
-              <ProtectedRoute>
-                <MatchEditPage />
-              </ProtectedRoute>
-            }
-          />
-          {/* 404 */}
-          <Route path="*" element={<div>Page not found</div>} /> 
-        </Routes>
-      </main>
-    </div>
+        {/* PROTECTED ROUTES */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute user={user}>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/male-singles"
+          element={
+            <ProtectedRoute user={user}>
+              <MaleSinglesPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/female-singles"
+          element={
+            <ProtectedRoute user={user}>
+              <FemaleSinglesPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/matchmakers"
+          element={
+            <ProtectedRoute user={user}>
+              <MatchmakersPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/matchmakers/:id"
+          element={
+            <ProtectedRoute user={user}>
+              <MatchmakerDetailPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* MATCH ROUTES */}
+        <Route
+          path="/matches/:id"
+          element={
+            <ProtectedRoute user={user}>
+              <MatchDetailPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/matches/:id/edit"
+          element={
+            <ProtectedRoute user={user}>
+              <MatchEditPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* FALLBACK */}
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </>
   );
 }
 

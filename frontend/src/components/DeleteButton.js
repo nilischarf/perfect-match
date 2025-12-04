@@ -1,11 +1,7 @@
-import "../styles/DeleteButton.css";
+import PinkPillButton from "./PinkPillButton";
 
 function DeleteButton({ onClick }) {
-  return (
-    <button className="delete-btn" onClick={onClick}>
-      🗑️
-    </button>
-  );
+  return <PinkPillButton icon="🗑️" onClick={onClick} />;
 }
 
 export default DeleteButton;
