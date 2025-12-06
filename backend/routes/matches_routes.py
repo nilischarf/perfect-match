@@ -31,7 +31,7 @@ def get_match(id):
 def create_match():
     data = request.json or {}
 
-    required = ["matchmaker_id", "male_id", "female_id", "status"]
+    required = ["matchmaker_id", "male_single_id", "female_single_id", "status"]
     missing = [f for f in required if not data.get(f)]
     if missing:
         return jsonify({"error": f"Missing required fields: {', '.join(missing)}"}), 400
@@ -40,15 +40,21 @@ def create_match():
     mk = Matchmaker.query.filter_by(
         id=data["matchmaker_id"], user_id=current_user.id
     ).first()
+
     male = MaleSingle.query.filter_by(
-        id=data["male_id"], user_id=current_user.id
-    ).first()
-    female = FemaleSingle.query.filter_by(
-        id=data["female_id"], user_id=current_user.id
+        id=data["male_single_id"], user_id=current_user.id
     ).first()
 
-    if not mk or not male or not female:
-        return jsonify({"error": "Matchmaker or singles not found / not yours"}), 400
+    female = FemaleSingle.query.filter_by(
+        id=data["female_single_id"], user_id=current_user.id
+    ).first()
+
+    if not mk:
+        return jsonify({"error": "Matchmaker not found or not yours"}), 400
+    if not male:
+        return jsonify({"error": "Male single not found or not yours"}), 400
+    if not female:
+        return jsonify({"error": "Female single not found or not yours"}), 400
 
     try:
         m = Match(
@@ -59,13 +65,15 @@ def create_match():
             notes=data.get("notes"),
             user_id=current_user.id,
         )
+
         db.session.add(m)
         db.session.commit()
+
+        return jsonify(match_schema.dump(m)), 201
+
     except ValueError as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 400
-
-    return jsonify(match_schema.dump(m)), 201
 
 
 @matches_bp.patch("/<int:id>")

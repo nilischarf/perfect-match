@@ -41,7 +41,7 @@ function MaleSinglesPage() {
     if (!window.confirm("Delete this male single?")) return;
 
     try {
-      await apiFetch(`/male_singles/${id}`, { method: "DELETE" });
+      await apiFetch(`/male-singles/${id}`, { method: "DELETE" });
       setSingles((prev) => prev.filter((s) => s.id !== id));
     } catch (err) {
       alert(err?.data?.error || "Delete failed");

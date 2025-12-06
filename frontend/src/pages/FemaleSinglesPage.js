@@ -41,7 +41,7 @@ function FemaleSinglesPage() {
     if (!window.confirm("Delete this female single?")) return;
 
     try {
-      await apiFetch(`/female_singles/${id}`, { method: "DELETE" });
+      await apiFetch(`/female-singles/${id}`, { method: "DELETE" });
       setSingles((prev) => prev.filter((s) => s.id !== id));
     } catch (err) {
       alert(err?.data?.error || "Delete failed");

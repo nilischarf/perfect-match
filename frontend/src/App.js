@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import NavBar from "./components/NavBar";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -7,14 +7,20 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
+
 import MaleSinglesPage from "./pages/MaleSinglesPage";
 import FemaleSinglesPage from "./pages/FemaleSinglesPage";
+
+import SingleDetailPage from "./pages/SingleDetailPage";   // ✅ NEW IMPORT
+
 import MatchmakersPage from "./pages/MatchmakersPage";
 import MatchmakerDetailPage from "./pages/MatchmakerDetailPage";
-import MatchCreatePage from "./pages/MatchCreatePage";
 
+import MatchCreatePage from "./pages/MatchCreatePage";
 import MatchDetailPage from "./pages/MatchDetailPage";
 import MatchEditPage from "./pages/MatchEditPage";
+
+import NotFoundPage from "./pages/NotFoundPage";
 
 import { checkSessionApi, logoutApi } from "./utils/api";
 
@@ -64,8 +70,7 @@ function App() {
 
         <Route 
           path="/signup" 
-          element={<SignupPage 
-          onSignup={setUser} />} 
+          element={<SignupPage onSignup={setUser} />} 
         />
 
         <Route
@@ -83,11 +88,29 @@ function App() {
           }
         />
 
+        <Route 
+          path="/male-singles/:id" 
+          element={
+            <ProtectedRoute user={user}>
+              <SingleDetailPage type="male" />
+            </ProtectedRoute>
+          }
+        />
+
         <Route
           path="/female-singles"
           element={
             <ProtectedRoute user={user}>
               <FemaleSinglesPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route 
+          path="/female-singles/:id" 
+          element={
+            <ProtectedRoute user={user}>
+              <SingleDetailPage type="female" />
             </ProtectedRoute>
           }
         />
@@ -139,7 +162,7 @@ function App() {
         />
 
         {/* FALLBACK */}
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>
   );

@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { loginApi } from "../utils/api";
 import "../styles/LoginPage.css";
 
 function LoginPage({ onLogin }) {
-  const [username, setUsername] = useState("admin");
-  const [password, setPassword] = useState("password123");
+  // 👇 Default to empty so fields don't auto-fill
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -13,6 +14,14 @@ function LoginPage({ onLogin }) {
   const navigate = useNavigate();
 
   const from = location.state?.from?.pathname || "/";
+
+  // 👇 ADD THIS: Clear fields anytime the login page loads
+  useEffect(() => {
+    setUsername("");
+    setPassword("");
+    setError(null);
+    setLoading(false);
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -40,7 +49,12 @@ function LoginPage({ onLogin }) {
   return (
     <div className="login-container">
       <h1>Login</h1>
-      {error && <div style={{ color: "red", marginBottom: "0.5rem" }}>{error}</div>}
+
+      {error && (
+        <div style={{ color: "red", marginBottom: "0.5rem" }}>
+          {error}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} style={{ maxWidth: 300 }}>
         <div>
@@ -72,7 +86,11 @@ function LoginPage({ onLogin }) {
           {loading ? "Logging in..." : "Login"}
         </button>
       </form>
-      <p>Don't have an account? <Link to="/signup">Sign up</Link></p>
+
+      <p>
+        Don't have an account?{" "}
+        <Link to="/signup">Sign up</Link>
+      </p>
     </div>
   );
 }

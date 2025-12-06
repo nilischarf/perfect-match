@@ -38,10 +38,6 @@ NOTES = [
     "Prefers someone who is growth-oriented.",
 ]
 
-# ---------------------------------------------------
-# Match statuses allowed by backend
-# ---------------------------------------------------
-
 ALLOWED_STATUSES = ["Introduced", "Dating", "Met", "Success", "Failed"]
 
 def random_status():
@@ -85,7 +81,7 @@ app = create_app()
 
 with app.app_context():
 
-    print("⚠️  Dropping existing tables…")
+    print("⚠️ Dropping existing tables…")
     db.drop_all()
     db.create_all()
 
@@ -116,8 +112,8 @@ with app.app_context():
             salary=random.randint(3000, 8000),
             user_id=user.id,
         )
-        matchmakers.append(mk)
         db.session.add(mk)
+        matchmakers.append(mk)
 
     db.session.commit()
 
@@ -129,8 +125,8 @@ with app.app_context():
     male_singles = []
     for _ in range(10):
         male = MaleSingle(**random_male(user.id))
-        male_singles.append(male)
         db.session.add(male)
+        male_singles.append(male)
 
     db.session.commit()
 
@@ -142,8 +138,8 @@ with app.app_context():
     female_singles = []
     for _ in range(10):
         female = FemaleSingle(**random_female(user.id))
-        female_singles.append(female)
         db.session.add(female)
+        female_singles.append(female)
 
     db.session.commit()
 
@@ -152,16 +148,19 @@ with app.app_context():
     # --------------------------
     print("💞 Creating matches…")
 
-    for _ in range(20):
+    NUM_MATCHES = 100   # <-- Increase or change as you want
+
+    for _ in range(NUM_MATCHES):
         match = Match(
             matchmaker_id=random.choice(matchmakers).id,
             male_single_id=random.choice(male_singles).id,
             female_single_id=random.choice(female_singles).id,
             status=random_status(),
             notes=random.choice(NOTES),
-            user_id=user.id,   
+            user_id=user.id,
         )
-    db.session.add(match)
+        db.session.add(match)
+
     db.session.commit()
 
     print("🌱 Seeding complete!")

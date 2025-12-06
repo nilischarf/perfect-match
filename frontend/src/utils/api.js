@@ -68,7 +68,7 @@ export function fetchMaleSingles() {
 }
 
 export function fetchMaleSingle(id) {
-  return apiFetch(`/male_singles/${id}`, { method: "GET" });
+  return apiFetch(`/male-singles/${id}`, { method: "GET" });
 }
 
 export function createMaleSingle(payload) {
@@ -83,7 +83,7 @@ export function fetchFemaleSingles() {
 }
 
 export function fetchFemaleSingle(id) {
-  return apiFetch(`/female_singles/${id}`, { method: "GET" });
+  return apiFetch(`/female-singles/${id}`, { method: "GET" });
 }
 
 export function createFemaleSingle(payload) {

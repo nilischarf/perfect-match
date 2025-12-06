@@ -1,9 +1,7 @@
-import { useState } from "react";
-import SingleDetail from "./SingleDetail";
-import "../styles/SinglesList.css";
+import { useNavigate } from "react-router-dom";
 
 function SinglesList({ singles, type }) {
-  const [selected, setSelected] = useState(null);
+  const navigate = useNavigate();
 
   return (
     <div className="singles-layout">
@@ -12,22 +10,14 @@ function SinglesList({ singles, type }) {
           <li key={s.id} className="single-row">
             <button
               type="button"
-              onClick={() => setSelected(s)}
               className="single-item"
+              onClick={() => navigate(`/${type}-singles/${s.id}`)}
             >
               {s.first_name} {s.last_name} ({s.age})
             </button>
           </li>
         ))}
       </ul>
-
-      <div style={{ marginLeft: "2rem" }}>
-        {selected ? (
-          <SingleDetail single={selected} type={type} />
-        ) : (
-          <p>Select a {type} to view details and matches.</p>
-        )}
-      </div>
     </div>
   );
 }
