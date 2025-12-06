@@ -43,13 +43,67 @@ function SingleForm({ onSubmit, defaultGender }) {
     <form onSubmit={handleSubmit} className="single-form">
       {formError && <p className="error-alert">{formError}</p>}
 
-      <label>First Name<input value={firstName} onChange={(e)=>setFirstName(e.target.value)} required /></label>
-      <label>Last Name<input value={lastName} onChange={(e)=>setLastName(e.target.value)} required /></label>
-      <label>Age<input type="number" min="18" value={age} onChange={(e)=>setAge(e.target.value)} required /></label>
-      <label>Gender<input value={gender} onChange={(e)=>setGender(e.target.value)} required /></label>
-      <label>Location<input value={location} onChange={(e)=>setLocation(e.target.value)} /></label>
-      <label>Phone<input value={phoneNumber} onChange={(e)=>setPhoneNumber(e.target.value)} /></label>
-      <label>Notes<textarea value={notes} onChange={(e)=>setNotes(e.target.value)} /></label>
+      <label>
+        First Name
+        <input
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+          required
+        />
+      </label>
+
+      <label>
+        Last Name
+        <input
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+          required
+        />
+      </label>
+
+      <label>
+        Age
+        <input
+          type="number"
+          min="18"
+          value={age}
+          onChange={(e) => setAge(e.target.value)}
+          required
+        />
+      </label>
+
+      <label>
+        Gender
+        <input
+          value={gender}
+          onChange={(e) => setGender(e.target.value)}
+          required
+        />
+      </label>
+
+      <label>
+        Location
+        <input
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+        />
+      </label>
+
+      <label>
+        Phone
+        <input
+          value={phoneNumber}
+          onChange={(e) => setPhoneNumber(e.target.value)}
+        />
+      </label>
+
+      <label>
+        Notes
+        <textarea
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+        />
+      </label>
 
       <button type="submit">💖 Save</button>
     </form>

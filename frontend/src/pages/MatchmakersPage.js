@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { apiFetch } from "../utils/api";
 import { useNavigate } from "react-router-dom";
 import {
   fetchMatchmakers,
   createMatchmaker
 } from "../utils/api";
+
 import MatchmakerList from "../components/MatchmakerList";
 import "../styles/MatchmakersPage.css";
 
@@ -21,8 +21,7 @@ function MatchmakersPage() {
   useEffect(() => {
     async function load() {
       try {
-        const data = await fetchMatchmakers();
-        console.log("MATCHMAKERS FROM API:", data);
+        const data = await fetchMatchmakers();   // ✅ FIXED
         setMatchmakers(data);
       } catch (err) {
         console.error(err);
@@ -41,24 +40,11 @@ function MatchmakersPage() {
         name: newName,
         location: newLocation
       });
-      setMatchmakers((prev) => [...prev, created]);
+      setMatchmakers(prev => [...prev, created]);
       setNewName("");
       setNewLocation("");
     } catch (err) {
-      console.error(err);
       alert("Could not create matchmaker");
-    }
-  }
-
-  async function handleDelete(id) {
-    if (!window.confirm("Delete this matchmaker?")) return;
-
-    try {
-      await apiFetch(`/matchmakers/${id}`, { method: "DELETE" });
-      setMatchmakers(prev => prev.filter(m => m.id !== id));
-    } catch (err) {
-      console.error(err);
-      alert("Failed to delete matchmaker");
     }
   }
 
@@ -66,36 +52,33 @@ function MatchmakersPage() {
   if (error) return <div>{error}</div>;
 
   return (
-    <div>
+    <div className="page">
       <h1>Matchmakers</h1>
 
       <MatchmakerList
         matchmakers={matchmakers}
         onSelect={(id) => navigate(`/matchmakers/${id}`)}
-        onDelete={handleDelete}
       />
 
       <h2>Add Matchmaker</h2>
       <form onSubmit={handleCreate} style={{ maxWidth: 400 }}>
-        <div>
-          <label>
-            Name
-            <input
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              required
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            Location
-            <input
-              value={newLocation}
-              onChange={(e) => setNewLocation(e.target.value)}
-            />
-          </label>
-        </div>
+        <label>
+          Name:
+          <input
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            required
+          />
+        </label>
+
+        <label>
+          Location:
+          <input
+            value={newLocation}
+            onChange={(e) => setNewLocation(e.target.value)}
+          />
+        </label>
+
         <button type="submit">Add Matchmaker</button>
       </form>
     </div>

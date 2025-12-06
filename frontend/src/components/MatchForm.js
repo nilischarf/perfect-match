@@ -1,5 +1,5 @@
 import { useState } from "react";
-import '../styles/MatchForm.css'
+import "../styles/MatchForm.css";
 
 function MatchForm({ initialValues, males, females, onSubmit }) {
   const [form, setForm] = useState(initialValues);
@@ -18,7 +18,12 @@ function MatchForm({ initialValues, males, females, onSubmit }) {
     <form className="match-form" onSubmit={handleSubmit}>
       <label>
         Status
-        <select name="status" value={form.status} onChange={updateField} required>
+        <select
+          name="status"
+          value={form.status}
+          onChange={updateField}
+          required
+        >
           <option value="">-- Select Status --</option>
           <option value="Introduced">Introduced</option>
           <option value="Dating">Dating</option>
@@ -29,7 +34,12 @@ function MatchForm({ initialValues, males, females, onSubmit }) {
 
       <label>
         Male
-        <select name="male_id" value={form.male_id} onChange={updateField} required>
+        <select
+          name="male_id"
+          value={form.male_id}
+          onChange={updateField}
+          required
+        >
           <option value="">-- Select Male --</option>
           {males.map((m) => (
             <option key={m.id} value={m.id}>

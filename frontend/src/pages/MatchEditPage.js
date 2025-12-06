@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { apiFetch, fetchMaleSingles, fetchFemaleSingles } from "../utils/api";
+import {
+  apiFetch,
+  fetchMaleSingles,
+  fetchFemaleSingles
+} from "../utils/api";
 import MatchForm from "../components/MatchForm";
 
 function MatchEditPage() {
@@ -41,7 +45,7 @@ function MatchEditPage() {
         body: JSON.stringify(formData)
       });
       alert("Match updated ✔");
-      navigate(`/matches/${id}`); // Go back to details page
+      navigate(`/matches/${id}`);
     } catch (err) {
       alert(err.data?.error || "Update failed");
     }

@@ -25,7 +25,7 @@ function SingleDetail({ single, type }) {
 
       <MatchList
         matches={single.matches || []}
-        onView={handleViewMatch}     // 👈 NEW: opens match detail page
+        onView={handleViewMatch}
       />
     </div>
   );

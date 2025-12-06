@@ -26,10 +26,22 @@ function MatchDetailPage() {
     <div style={{ padding: "1rem" }}>
       <h1>Match Details</h1>
 
-      <p><strong>Status:</strong> {match.status}</p>
-      <p><strong>Male:</strong> {match.male_single?.first_name} {match.male_single?.last_name}</p>
-      <p><strong>Female:</strong> {match.female_single?.first_name} {match.female_single?.last_name}</p>
-      {match.notes && <p><em>{match.notes}</em></p>}
+      <p>
+        <strong>Status:</strong> {match.status}
+      </p>
+      <p>
+        <strong>Male:</strong>{" "}
+        {match.male_single?.first_name} {match.male_single?.last_name}
+      </p>
+      <p>
+        <strong>Female:</strong>{" "}
+        {match.female_single?.first_name} {match.female_single?.last_name}
+      </p>
+      {match.notes && (
+        <p>
+          <em>{match.notes}</em>
+        </p>
+      )}
 
       <div style={{ marginTop: "1rem", display: "flex", gap: "1rem" }}>
         <button

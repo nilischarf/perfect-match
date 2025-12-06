@@ -3,22 +3,22 @@ import "../styles/MatchList.css";
 import DeleteButton from "./DeleteButton";
 import { useNavigate } from "react-router-dom";
 
-function MatchList({ matches, onDelete, refresh }) {
+function MatchList({ matches, onDelete, refresh, onView }) {
   const [msg, setMsg] = useState("");
   const navigate = useNavigate();
+
+  if (!matches?.length) return <p>No matches yet.</p>;
 
   async function handleDelete(id) {
     if (!window.confirm("Delete this match permanently?")) return;
 
     try {
-      // If parent provided a delete function → use it
       if (onDelete) {
-        await onDelete(id);
+        await onDelete(id); // parent does the API call
       }
 
-      // If parent provided refresh → call it
       if (refresh) {
-        refresh();
+        refresh(); // optional reload callback
       }
 
       setMsg("Match deleted ✔");
@@ -29,28 +29,50 @@ function MatchList({ matches, onDelete, refresh }) {
     }
   }
 
+  function handleEdit(id) {
+    if (onView) {
+      // If SingleDetail passes a custom handler
+      onView(id);
+    } else {
+      // Default: go to edit page
+      navigate(`/matches/${id}/edit`);
+    }
+  }
+
   return (
-    <ul className="match-list">
-      {matches.map((m) => (
-        <li key={m.id}>
-          <p><strong>Status:</strong> {m.status}</p>
-          <p><strong>Male:</strong> {m.male_single?.first_name} {m.male_single?.last_name}</p>
-          <p><strong>Female:</strong> {m.female_single?.first_name} {m.female_single?.last_name}</p>
-          {m.notes && <em>{m.notes}</em>}
+    <>
+      {msg && <p className="match-success-msg">{msg}</p>}
+      <ul className="match-list">
+        {matches.map((m) => (
+          <li key={m.id}>
+            <p>
+              <strong>Status:</strong> {m.status}
+            </p>
+            <p>
+              <strong>Male:</strong>{" "}
+              {m.male_single?.first_name} {m.male_single?.last_name}
+            </p>
+            <p>
+              <strong>Female:</strong>{" "}
+              {m.female_single?.first_name} {m.female_single?.last_name}
+            </p>
+            {m.notes && <em>{m.notes}</em>}
 
-          <div className="match-actions">
-            <button
-              className="edit-pill"
-              onClick={() => navigate(`/matches/${m.id}/edit`)}
-            >
-              ✏️
-            </button>
+            <div className="match-actions">
+              <button
+                className="edit-pill"
+                type="button"
+                onClick={() => handleEdit(m.id)}
+              >
+                ✏️
+              </button>
 
-            <DeleteButton onClick={() => handleDelete(m.id)} />
-          </div>
-        </li>
-      ))}
-    </ul>
+              <DeleteButton onClick={() => handleDelete(m.id)} />
+            </div>
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }
 

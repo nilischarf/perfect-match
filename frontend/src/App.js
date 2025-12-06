@@ -6,7 +6,6 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
-import Dashboard from "./pages/Dashboard";
 import MaleSinglesPage from "./pages/MaleSinglesPage";
 import FemaleSinglesPage from "./pages/FemaleSinglesPage";
 import MatchmakersPage from "./pages/MatchmakersPage";
@@ -54,15 +53,6 @@ function App() {
         <Route path="/" element={<HomePage />} />
 
         {/* PROTECTED ROUTES */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute user={user}>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-
         <Route
           path="/male-singles"
           element={

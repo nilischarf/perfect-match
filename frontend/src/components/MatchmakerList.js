@@ -1,7 +1,6 @@
-import DeleteButton from "./DeleteButton";
 import "../styles/MatchmakerList.css";
 
-function MatchmakerList({ matchmakers, onSelect, onDelete }) {
+function MatchmakerList({ matchmakers, onSelect }) {
   if (!matchmakers.length) return <p>No matchmakers yet.</p>;
 
   return (
@@ -15,7 +14,6 @@ function MatchmakerList({ matchmakers, onSelect, onDelete }) {
           >
             {mk.name} {mk.location ? `(${mk.location})` : ""}
           </button>
-          <DeleteButton onClick={() => onDelete(mk.id)} />
         </li>
       ))}
     </ul>

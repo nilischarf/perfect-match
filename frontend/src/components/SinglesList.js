@@ -1,9 +1,8 @@
 import { useState } from "react";
 import SingleDetail from "./SingleDetail";
-import DeleteButton from "./DeleteButton";
 import "../styles/SinglesList.css";
 
-function SinglesList({ singles, type, onDelete }) {
+function SinglesList({ singles, type }) {
   const [selected, setSelected] = useState(null);
 
   return (
@@ -18,8 +17,6 @@ function SinglesList({ singles, type, onDelete }) {
             >
               {s.first_name} {s.last_name} ({s.age})
             </button>
-
-            <DeleteButton onClick={() => onDelete(s.id)} />
           </li>
         ))}
       </ul>
