@@ -1,8 +1,13 @@
 from datetime import datetime
 from flask_login import UserMixin
+from sqlalchemy.orm import validates
+from sqlalchemy import CheckConstraint
 from extensions import db, bcrypt
 
-# User Model (login)
+# ============================================================
+# USER MODEL
+# ============================================================
+
 class User(UserMixin, db.Model):
     __tablename__ = "users"
 
@@ -10,10 +15,8 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(50), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
 
-    # Relationships
     matchmakers = db.relationship("Matchmaker", back_populates="user")
 
-    # Flask-Login required methods
     def get_id(self):
         return str(self.id)
 
@@ -28,122 +31,189 @@ class User(UserMixin, db.Model):
     def check_password(self, raw_password):
         return bcrypt.check_password_hash(self.password_hash, raw_password)
 
-# Matchmaker Model
+
+# ============================================================
+# MATCHMAKER MODEL
+# ============================================================
+
 class Matchmaker(db.Model):
     __tablename__ = "matchmakers"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120))
+    name = db.Column(db.String(120), nullable=False)
     location = db.Column(db.String(120))
     phone_number = db.Column(db.String(50))
     email_address = db.Column(db.String(120))
-    salary = db.Column(db.Float)
+    salary = db.Column(db.Float, default=0, nullable=False)
 
-    # FK → User
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-
-    # Relationships
     user = db.relationship("User", back_populates="matchmakers")
-    matches = db.relationship("Match", back_populates="matchmaker", cascade="all, delete-orphan" )
 
-    male_singles = db.relationship(
-        "MaleSingle",
-        secondary="matches",
-        primaryjoin="Matchmaker.id == Match.matchmaker_id",
-        secondaryjoin="MaleSingle.id == Match.male_single_id",
-        viewonly=True,
+    matches = db.relationship(
+        "Match",
+        back_populates="matchmaker",
+        cascade="all, delete-orphan"
     )
 
-    female_singles = db.relationship(
-        "FemaleSingle",
-        secondary="matches",
-        primaryjoin="Matchmaker.id == Match.matchmaker_id",
-        secondaryjoin="FemaleSingle.id == Match.female_single_id",
-        viewonly=True,
+    __table_args__ = (
+        CheckConstraint("salary >= 0", name="valid_salary"),
     )
 
-# Male Singles Model
+    @validates("name")
+    def validate_name(self, key, val):
+        if not val or not val.strip():
+            raise ValueError("Matchmaker name is required")
+        return val.strip()
+
+    @validates("salary")
+    def validate_salary(self, key, val):
+        if val is not None and val < 0:
+            raise ValueError("Salary cannot be negative")
+        return val
+
+
+# ============================================================
+# MALE SINGLE
+# ============================================================
+
 class MaleSingle(db.Model):
     __tablename__ = "male_singles"
 
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(120))
-    last_name = db.Column(db.String(120))
-    age = db.Column(db.Integer)
-    gender = db.Column(db.String(20))
+
+    first_name = db.Column(db.String(120), nullable=False)
+    last_name = db.Column(db.String(120), nullable=False)
+    age = db.Column(db.Integer, nullable=False)
+    gender = db.Column(db.String(20), nullable=False)
     location = db.Column(db.String(120))
     notes = db.Column(db.Text)
     phone_number = db.Column(db.String(50))
 
-    # Relationships
-    matches = db.relationship("Match", back_populates="male_single", cascade="all, delete-orphan")
-
-    matchmakers = db.relationship(
-        "Matchmaker",
-        secondary="matches",
-        primaryjoin="MaleSingle.id == Match.male_single_id",
-        secondaryjoin="Matchmaker.id == Match.matchmaker_id",
-        viewonly=True,
+    matches = db.relationship(
+        "Match",
+        back_populates="male_single",
+        cascade="all, delete-orphan"
     )
 
-    female_singles = db.relationship(
-        "FemaleSingle",
-        secondary="matches",
-        primaryjoin="MaleSingle.id == Match.male_single_id",
-        secondaryjoin="FemaleSingle.id == Match.female_single_id",
-        viewonly=True,
+    __table_args__ = (
+        CheckConstraint("age >= 18", name="valid_male_age"),
     )
 
-# Female Singles Model 
+    # Validations
+    @validates("first_name", "last_name")
+    def validate_names(self, key, val):
+        if not val or not val.strip():
+            raise ValueError(f"{key.replace('_',' ').title()} is required")
+        return val.strip()
+
+    @validates("age")
+    def validate_age(self, key, val):
+        if val is None or val < 18:
+            raise ValueError("Age must be 18 or older")
+        return val
+
+    @validates("gender")
+    def validate_gender(self, key, val):
+        if val not in ("Male", "M", "male"):
+            raise ValueError("Gender must be 'Male'")
+        return "Male"
+
+
+# ============================================================
+# FEMALE SINGLE
+# ============================================================
+
 class FemaleSingle(db.Model):
     __tablename__ = "female_singles"
 
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(120))
-    last_name = db.Column(db.String(120))
-    age = db.Column(db.Integer)
-    gender = db.Column(db.String(20))
+
+    first_name = db.Column(db.String(120), nullable=False)
+    last_name = db.Column(db.String(120), nullable=False)
+    age = db.Column(db.Integer, nullable=False)
+    gender = db.Column(db.String(20), nullable=False)
     location = db.Column(db.String(120))
     notes = db.Column(db.Text)
     phone_number = db.Column(db.String(50))
 
-    # Relationships
-    matches = db.relationship("Match", back_populates="female_single", cascade="all, delete-orphan")
-    
-    matchmakers = db.relationship(
-        "Matchmaker",
-        secondary="matches",
-        primaryjoin="FemaleSingle.id == Match.female_single_id",
-        secondaryjoin="Matchmaker.id == Match.matchmaker_id",
-        viewonly=True,
+    matches = db.relationship(
+        "Match",
+        back_populates="female_single",
+        cascade="all, delete-orphan"
     )
 
-    male_singles = db.relationship(
-        "MaleSingle",
-        secondary="matches",
-        primaryjoin="FemaleSingle.id == Match.female_single_id",
-        secondaryjoin="MaleSingle.id == Match.male_single_id",
-        viewonly=True,
+    __table_args__ = (
+        CheckConstraint("age >= 18", name="valid_female_age"),
     )
 
-# Match Model
+    @validates("first_name", "last_name")
+    def validate_names(self, key, val):
+        if not val or not val.strip():
+            raise ValueError(f"{key.replace('_',' ').title()} is required")
+        return val.strip()
+
+    @validates("age")
+    def validate_age(self, key, val):
+        if val is None or val < 18:
+            raise ValueError("Age must be 18 or older")
+        return val
+
+    @validates("gender")
+    def validate_gender(self, key, val):
+        if val not in ("Female", "F", "female"):
+            raise ValueError("Gender must be 'Female'")
+        return "Female"
+
+
+# ============================================================
+# MATCH MODEL
+# ============================================================
+
+VALID_STATUSES = {"Introduced", "Dating", "Failed", "Married"}
+
 class Match(db.Model):
     __tablename__ = "matches"
 
     id = db.Column(db.Integer, primary_key=True)
 
-    # Foreign keys
     matchmaker_id = db.Column(db.Integer, db.ForeignKey("matchmakers.id"), nullable=False)
-    male_single_id = db.Column(db.Integer, db.ForeignKey("male_singles.id"), nullable=True)
-    female_single_id = db.Column(db.Integer, db.ForeignKey("female_singles.id"), nullable=True)
+    male_single_id = db.Column(db.Integer, db.ForeignKey("male_singles.id"))
+    female_single_id = db.Column(db.Integer, db.ForeignKey("female_singles.id"))
 
-    status = db.Column(db.String(50))  # e.g. "Introduced", "Scheduled", "Met", "Success", "Failed"
+    status = db.Column(db.String(50))
     notes = db.Column(db.Text)
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    updated_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow
+    )
 
-    # Relationships
     matchmaker = db.relationship("Matchmaker", back_populates="matches")
     male_single = db.relationship("MaleSingle", back_populates="matches")
     female_single = db.relationship("FemaleSingle", back_populates="matches")
+
+    @validates("status")
+    def validate_status(self, key, val):
+        if val not in VALID_STATUSES:
+            raise ValueError(f"Invalid status: {val}")
+        return val
+
+    @validates("male_single_id", "female_single_id")
+    def validate_links(self, key, val):
+        # allow null values; validation done after insert
+        return val
+
+    @validates("matchmaker_id")
+    def validate_matchmaker(self, key, val):
+        if not Matchmaker.query.get(val):
+            raise ValueError("Matchmaker does not exist")
+        return val
+
+    def validate_pairing(self):
+        """
+        Called after flush: ensures at least one of male/female present.
+        """
+        if not self.male_single_id and not self.female_single_id:
+            raise ValueError("Match must include a male ID or a female ID")
