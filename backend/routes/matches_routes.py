@@ -30,32 +30,33 @@ def create_match():
     data = request.json or {}
 
     if not data.get("matchmaker_id"):
-        return jsonify({"error": "Matchmaker ID required"}), 400
+        return jsonify({"error": "matchmaker_id required"}), 400
     if not data.get("male_single_id") and not data.get("female_single_id"):
-        return jsonify({"error": "Must include male_single_id or female_single_id"}), 400
+        return jsonify({"error": "male_single_id or female_single_id required"}), 400
 
     m = Match(**data)
     db.session.add(m)
     db.session.commit()
+
     return jsonify(match_schema.dump(m)), 201
 
 
 @matches_bp.patch("/<int:id>")
 @login_required
 def update_match(id):
-    match = Match.query.get_or_404(id)
-    data = request.json or {}
+    m = Match.query.get(id)
+    if not m:
+        return jsonify({"error": "Match not found"}), 404
 
-    # Allowed fields to update
-    allowed_fields = {"status", "male_id", "female_id", "notes"}
+    allowed = {"status", "notes", "male_single_id", "female_single_id"}
 
-    for key, value in data.items():
-        if key not in allowed_fields:
-            return jsonify({"error": f"Field '{key}' cannot be updated"}), 400
-        setattr(match, key, value)
+    for key, value in (request.json or {}).items():
+        if key not in allowed:
+            return jsonify({"error": f"'{key}' cannot be updated"}), 400
+        setattr(m, key, value)
 
     db.session.commit()
-    return jsonify(match_schema.dump(match)), 200
+    return jsonify(match_schema.dump(m)), 200
 
 
 @matches_bp.delete("/<int:id>")
@@ -67,4 +68,5 @@ def delete_match(id):
 
     db.session.delete(m)
     db.session.commit()
+
     return jsonify({"message": "Match deleted"}), 200

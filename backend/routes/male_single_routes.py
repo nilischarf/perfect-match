@@ -11,8 +11,9 @@ male_list_schema = MaleSingleSchema(many=True)
 
 @male_singles_bp.get("")
 @login_required
-def get_all_male_singles():
-    return jsonify(male_list_schema.dump(MaleSingle.query.all())), 200
+def get_male_singles():
+    males = MaleSingle.query.all()
+    return jsonify(male_list_schema.dump(males)), 200
 
 
 @male_singles_bp.get("/<int:id>")
@@ -37,30 +38,5 @@ def create_male_single():
     m = MaleSingle(**data)
     db.session.add(m)
     db.session.commit()
+
     return jsonify(male_schema.dump(m)), 201
-
-
-@male_singles_bp.patch("/<int:id>")
-@login_required
-def update_male_single(id):
-    m = MaleSingle.query.get(id)
-    if not m:
-        return jsonify({"error": "Male single not found"}), 404
-
-    for key, val in (request.json or {}).items():
-        if hasattr(m, key):
-            setattr(m, key, val)
-
-    db.session.commit()
-    return jsonify(male_schema.dump(m)), 200
-
-
-@male_singles_bp.delete("/<int:id>")
-@login_required
-def delete_male_single(id):
-    m = MaleSingle.query.get(id)
-    if not m:
-        return jsonify({"error": "Male single not found"}), 404
-    db.session.delete(m)
-    db.session.commit()
-    return jsonify({"message": "Male single deleted"}), 200

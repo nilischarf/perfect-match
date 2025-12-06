@@ -12,7 +12,8 @@ female_list_schema = FemaleSingleSchema(many=True)
 @female_singles_bp.get("")
 @login_required
 def get_female_singles():
-    return jsonify(female_list_schema.dump(FemaleSingle.query.all())), 200
+    females = FemaleSingle.query.all()
+    return jsonify(female_list_schema.dump(females)), 200
 
 
 @female_singles_bp.get("/<int:id>")
@@ -28,6 +29,7 @@ def get_female_single(id):
 @login_required
 def create_female_single():
     data = request.json or {}
+
     required = ["first_name", "last_name", "age"]
     missing = [f for f in required if not data.get(f)]
     if missing:
@@ -36,31 +38,5 @@ def create_female_single():
     f = FemaleSingle(**data)
     db.session.add(f)
     db.session.commit()
+
     return jsonify(female_schema.dump(f)), 201
-
-
-@female_singles_bp.patch("/<int:id>")
-@login_required
-def update_female_single(id):
-    f = FemaleSingle.query.get(id)
-    if not f:
-        return jsonify({"error": "Female single not found"}), 404
-
-    for key, val in (request.json or {}).items():
-        if hasattr(f, key):
-            setattr(f, key, val)
-
-    db.session.commit()
-    return jsonify(female_schema.dump(f)), 200
-
-
-@female_singles_bp.delete("/<int:id>")
-@login_required
-def delete_female_single(id):
-    f = FemaleSingle.query.get(id)
-    if not f:
-        return jsonify({"error": "Female single not found"}), 404
-
-    db.session.delete(f)
-    db.session.commit()
-    return jsonify({"message": "Female single deleted"}), 200

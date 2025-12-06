@@ -12,7 +12,8 @@ matchmaker_list_schema = MatchmakerSchema(many=True)
 @matchmakers_bp.get("")
 @login_required
 def get_matchmakers():
-    return jsonify(matchmaker_list_schema.dump(Matchmaker.query.all())), 200
+    matchmakers = Matchmaker.query.all()
+    return jsonify(matchmaker_list_schema.dump(matchmakers)), 200
 
 
 @matchmakers_bp.get("/<int:id>")
@@ -37,31 +38,5 @@ def create_matchmaker():
     mk = Matchmaker(**data)
     db.session.add(mk)
     db.session.commit()
+
     return jsonify(matchmaker_schema.dump(mk)), 201
-
-
-@matchmakers_bp.patch("/<int:id>")
-@login_required
-def update_matchmaker(id):
-    mk = Matchmaker.query.get(id)
-    if not mk:
-        return jsonify({"error": "Matchmaker not found"}), 404
-
-    for key, val in (request.json or {}).items():
-        if hasattr(mk, key):
-            setattr(mk, key, val)
-
-    db.session.commit()
-    return jsonify(matchmaker_schema.dump(mk)), 200
-
-
-@matchmakers_bp.delete("/<int:id>")
-@login_required
-def delete_matchmaker(id):
-    mk = Matchmaker.query.get(id)
-    if not mk:
-        return jsonify({"error": "Matchmaker not found"}), 404
-
-    db.session.delete(mk)
-    db.session.commit()
-    return jsonify({"message": "Matchmaker deleted"}), 200
