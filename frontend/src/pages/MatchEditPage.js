@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import {
   apiFetch,
   fetchMaleSingles,
-  fetchFemaleSingles
+  fetchFemaleSingles,
 } from "../utils/api";
 import MatchForm from "../components/MatchForm";
 
@@ -22,7 +22,7 @@ function MatchEditPage() {
         const [matchData, maleList, femaleList] = await Promise.all([
           apiFetch(`/matches/${id}`),
           fetchMaleSingles(),
-          fetchFemaleSingles()
+          fetchFemaleSingles(),
         ]);
 
         setMatch(matchData);
@@ -42,7 +42,7 @@ function MatchEditPage() {
     try {
       await apiFetch(`/matches/${id}`, {
         method: "PATCH",
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
       alert("Match updated ✔");
       navigate(`/matches/${id}`);
@@ -60,9 +60,9 @@ function MatchEditPage() {
       <MatchForm
         initialValues={{
           status: match.status || "",
-          male_id: match.male_id,
-          female_id: match.female_id,
-          notes: match.notes || ""
+          male_id: match.male_single_id,
+          female_id: match.female_single_id,
+          notes: match.notes || "",
         }}
         males={males}
         females={females}

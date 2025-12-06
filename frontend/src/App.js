@@ -24,7 +24,11 @@ function App() {
     async function check() {
       try {
         const data = await checkSessionApi();
-        if (data.logged_in) setUser(data.user);
+        if (data.logged_in) {
+          setUser(data.user);
+        } else {
+          setUser(null);
+        }
       } catch (err) {
         setUser(null);
       } finally {
@@ -36,8 +40,11 @@ function App() {
   }, []);
 
   async function handleLogout() {
-    await logoutApi();
-    setUser(null);
+    try {
+      await logoutApi();
+    } finally {
+      setUser(null);
+    }
   }
 
   if (!authLoaded) return <div>Loading...</div>;
@@ -47,10 +54,15 @@ function App() {
       <NavBar user={user} onLogout={handleLogout} />
 
       <Routes>
-
         {/* PUBLIC ROUTES */}
-        <Route path="/login" element={<LoginPage setUser={setUser} />} />
-        <Route path="/" element={<HomePage />} />
+        <Route
+          path="/login"
+          element={<LoginPage onLogin={setUser} />}
+        />
+        <Route
+          path="/"
+          element={<HomePage user={user} />}
+        />
 
         {/* PROTECTED ROUTES */}
         <Route

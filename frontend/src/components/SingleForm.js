@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "../styles/SingleForm.css";
 
 function SingleForm({ onSubmit, defaultGender }) {
@@ -16,7 +16,8 @@ function SingleForm({ onSubmit, defaultGender }) {
     e.preventDefault();
 
     if (!firstName || !lastName || !age || Number(age) < 18 || !gender) {
-      return setFormError("⚠ Please fill all required fields. Age must be 18+.");
+      setFormError("⚠ Please fill all required fields. Age must be 18+.");
+      return;
     }
 
     setFormError("");
@@ -28,7 +29,7 @@ function SingleForm({ onSubmit, defaultGender }) {
       gender,
       location,
       phone_number: phoneNumber,
-      notes
+      notes,
     });
 
     setFirstName("");

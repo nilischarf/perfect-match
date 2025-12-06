@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  fetchMatchmakers,
-  createMatchmaker
-} from "../utils/api";
-
+import { fetchMatchmakers, createMatchmaker } from "../utils/api";
 import MatchmakerList from "../components/MatchmakerList";
 import "../styles/MatchmakersPage.css";
 
@@ -15,13 +11,14 @@ function MatchmakersPage() {
 
   const [newName, setNewName] = useState("");
   const [newLocation, setNewLocation] = useState("");
+  const [formError, setFormError] = useState("");
 
   const navigate = useNavigate();
 
   useEffect(() => {
     async function load() {
       try {
-        const data = await fetchMatchmakers();   // ✅ FIXED
+        const data = await fetchMatchmakers();
         setMatchmakers(data);
       } catch (err) {
         console.error(err);
@@ -35,16 +32,24 @@ function MatchmakersPage() {
 
   async function handleCreate(e) {
     e.preventDefault();
+    setFormError("");
+
+    if (!newName.trim()) {
+      setFormError("Name is required.");
+      return;
+    }
+
     try {
       const created = await createMatchmaker({
-        name: newName,
-        location: newLocation
+        name: newName.trim(),
+        location: newLocation.trim() || null,
       });
-      setMatchmakers(prev => [...prev, created]);
+      setMatchmakers((prev) => [...prev, created]);
       setNewName("");
       setNewLocation("");
     } catch (err) {
-      alert("Could not create matchmaker");
+      console.error(err);
+      setFormError(err.data?.error || "Could not create matchmaker");
     }
   }
 
@@ -52,7 +57,7 @@ function MatchmakersPage() {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="page">
+    <div className="matchmakers-container">
       <h1>Matchmakers</h1>
 
       <MatchmakerList
@@ -60,29 +65,32 @@ function MatchmakersPage() {
         onSelect={(id) => navigate(`/matchmakers/${id}`)}
       />
 
-      <div className="matchmaker_form">
-        <h2>Add Matchmaker</h2>
-        <form onSubmit={handleCreate} style={{ maxWidth: 400 }}>
+      <h2>Add Matchmaker</h2>
+      <form onSubmit={handleCreate} className="add-form">
+        {formError && (
+          <p style={{ color: "red", marginBottom: "0.5rem" }}>{formError}</p>
+        )}
+        <div>
           <label>
-            Name:
+            Name
             <input
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               required
             />
           </label>
-
+        </div>
+        <div>
           <label>
-            Location:
+            Location
             <input
               value={newLocation}
               onChange={(e) => setNewLocation(e.target.value)}
             />
           </label>
-
-          <button type="submit">Add Matchmaker</button>
-        </form>
-      </div>
+        </div>
+        <button type="submit">Add Matchmaker</button>
+      </form>
     </div>
   );
 }

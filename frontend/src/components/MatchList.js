@@ -7,20 +7,16 @@ function MatchList({ matches, onDelete, refresh, onView }) {
   const [msg, setMsg] = useState("");
   const navigate = useNavigate();
 
-  if (!matches?.length) return <p>No matches yet.</p>;
-
   async function handleDelete(id) {
     if (!window.confirm("Delete this match permanently?")) return;
 
     try {
       if (onDelete) {
-        await onDelete(id); // parent does the API call
+        await onDelete(id);
       }
-
       if (refresh) {
-        refresh(); // optional reload callback
+        refresh();
       }
-
       setMsg("Match deleted ✔");
     } catch (err) {
       alert("Delete failed");
@@ -29,40 +25,41 @@ function MatchList({ matches, onDelete, refresh, onView }) {
     }
   }
 
-  function handleEdit(id) {
-    if (onView) {
-      // If SingleDetail passes a custom handler
-      onView(id);
-    } else {
-      // Default: go to edit page
-      navigate(`/matches/${id}/edit`);
-    }
+  if (!matches || !matches.length) {
+    return <p>No matches yet.</p>;
   }
 
   return (
-    <>
-      {msg && <p className="match-success-msg">{msg}</p>}
+    <div>
+      {msg && <div className="success-banner">{msg}</div>}
+
       <ul className="match-list">
         {matches.map((m) => (
-          <li key={m.id}>
+          <li
+            key={m.id}
+            className={onView ? "match-row clickable" : "match-row"}
+            onClick={() => onView && onView(m.id)}
+          >
             <p>
               <strong>Status:</strong> {m.status}
             </p>
             <p>
-              <strong>Male:</strong>{" "}
-              {m.male_single?.first_name} {m.male_single?.last_name}
+              <strong>Male:</strong> {m.male_single?.first_name}{" "}
+              {m.male_single?.last_name}
             </p>
             <p>
-              <strong>Female:</strong>{" "}
-              {m.female_single?.first_name} {m.female_single?.last_name}
+              <strong>Female:</strong> {m.female_single?.first_name}{" "}
+              {m.female_single?.last_name}
             </p>
             {m.notes && <em>{m.notes}</em>}
 
-            <div className="match-actions">
+            <div
+              className="match-actions"
+              onClick={(e) => e.stopPropagation()}
+            >
               <button
                 className="edit-pill"
-                type="button"
-                onClick={() => handleEdit(m.id)}
+                onClick={() => navigate(`/matches/${m.id}/edit`)}
               >
                 ✏️
               </button>
@@ -72,7 +69,7 @@ function MatchList({ matches, onDelete, refresh, onView }) {
           </li>
         ))}
       </ul>
-    </>
+    </div>
   );
 }
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { loginApi } from "../utils/api";
 import "../styles/LoginPage.css";
@@ -16,6 +16,12 @@ function LoginPage({ onLogin }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
+
+    if (!username || !password) {
+      setError("Username and password are required.");
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -34,7 +40,7 @@ function LoginPage({ onLogin }) {
   return (
     <div>
       <h1>Login</h1>
-      {error && <div style={{ color: "red" }}>{error}</div>}
+      {error && <div style={{ color: "red", marginBottom: "0.5rem" }}>{error}</div>}
 
       <form onSubmit={handleSubmit} style={{ maxWidth: 300 }}>
         <div>
@@ -44,6 +50,7 @@ function LoginPage({ onLogin }) {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               autoComplete="username"
+              required
             />
           </label>
         </div>
@@ -56,6 +63,7 @@ function LoginPage({ onLogin }) {
               value={password}
               autoComplete="current-password"
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </label>
         </div>

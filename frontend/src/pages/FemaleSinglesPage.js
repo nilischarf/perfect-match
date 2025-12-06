@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchFemaleSingles, createFemaleSingle } from "../utils/api";
+import { apiFetch, fetchFemaleSingles, createFemaleSingle } from "../utils/api";
 import SinglesList from "../components/SinglesList";
 import SingleForm from "../components/SingleForm";
 import "../styles/FemaleSinglesPage.css";
@@ -28,12 +28,23 @@ function FemaleSinglesPage() {
     try {
       const created = await createFemaleSingle({
         ...payload,
-        gender: "Female"
+        gender: "Female",
       });
       setSingles((prev) => [...prev, created]);
     } catch (err) {
       console.error(err);
-      alert("Could not create female single");
+      alert(err.data?.error || "Could not create female single");
+    }
+  }
+
+  async function handleDelete(id) {
+    if (!window.confirm("Delete this female single?")) return;
+
+    try {
+      await apiFetch(`/female_singles/${id}`, { method: "DELETE" });
+      setSingles((prev) => prev.filter((s) => s.id !== id));
+    } catch (err) {
+      alert(err?.data?.error || "Delete failed");
     }
   }
 
@@ -43,7 +54,7 @@ function FemaleSinglesPage() {
   return (
     <div>
       <h1>Female Singles</h1>
-      <SinglesList singles={singles} type="female" />
+      <SinglesList singles={singles} type="female" onDelete={handleDelete} />
       <h2>Add Female Single</h2>
       <SingleForm onSubmit={handleCreateSingle} defaultGender="Female" />
     </div>

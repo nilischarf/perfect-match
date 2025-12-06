@@ -2,7 +2,10 @@ import { useState } from "react";
 import "../styles/MatchForm.css";
 
 function MatchForm({ initialValues, males, females, onSubmit }) {
-  const [form, setForm] = useState(initialValues);
+  const [form, setForm] = useState(
+    initialValues || { status: "", male_id: "", female_id: "", notes: "" }
+  );
+  const [formError, setFormError] = useState("");
 
   function updateField(e) {
     const { name, value } = e.target;
@@ -11,11 +14,22 @@ function MatchForm({ initialValues, males, females, onSubmit }) {
 
   function handleSubmit(e) {
     e.preventDefault();
+
+    if (!form.status || !form.male_id || !form.female_id) {
+      setFormError("Status, male and female are required.");
+      return;
+    }
+
+    setFormError("");
     onSubmit(form);
   }
 
   return (
     <form className="match-form" onSubmit={handleSubmit}>
+      {formError && (
+        <p style={{ color: "red", marginBottom: "0.5rem" }}>{formError}</p>
+      )}
+
       <label>
         Status
         <select
