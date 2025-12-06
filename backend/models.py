@@ -46,14 +46,21 @@ class Matchmaker(db.Model):
     user = db.relationship("User", back_populates="matchmakers")
     matches = db.relationship("Match", back_populates="matchmaker", cascade="all, delete-orphan" )
 
-    # Through-relationships (not real tables, but accessors)
-    @property
-    def male_singles(self):
-        return list({m.male_single for m in self.matches if m.male_single})
+    male_singles = db.relationship(
+        "MaleSingle",
+        secondary="matches",
+        primaryjoin="Matchmaker.id == Match.matchmaker_id",
+        secondaryjoin="MaleSingle.id == Match.male_single_id",
+        viewonly=True,
+    )
 
-    @property
-    def female_singles(self):
-        return list({m.female_single for m in self.matches if m.female_single})
+    female_singles = db.relationship(
+        "FemaleSingle",
+        secondary="matches",
+        primaryjoin="Matchmaker.id == Match.matchmaker_id",
+        secondaryjoin="FemaleSingle.id == Match.female_single_id",
+        viewonly=True,
+    )
 
 # Male Singles Model
 class MaleSingle(db.Model):
@@ -71,13 +78,21 @@ class MaleSingle(db.Model):
     # Relationships
     matches = db.relationship("Match", back_populates="male_single", cascade="all, delete-orphan")
 
-    @property
-    def matchmakers(self):
-        return list({m.matchmaker for m in self.matches if m.matchmaker})
+    matchmakers = db.relationship(
+        "Matchmaker",
+        secondary="matches",
+        primaryjoin="MaleSingle.id == Match.male_single_id",
+        secondaryjoin="Matchmaker.id == Match.matchmaker_id",
+        viewonly=True,
+    )
 
-    @property
-    def female_singles(self):
-        return list({m.female_single for m in self.matches if m.female_single})
+    female_singles = db.relationship(
+        "FemaleSingle",
+        secondary="matches",
+        primaryjoin="MaleSingle.id == Match.male_single_id",
+        secondaryjoin="FemaleSingle.id == Match.female_single_id",
+        viewonly=True,
+    )
 
 # Female Singles Model 
 class FemaleSingle(db.Model):
@@ -94,14 +109,22 @@ class FemaleSingle(db.Model):
 
     # Relationships
     matches = db.relationship("Match", back_populates="female_single", cascade="all, delete-orphan")
-    # secondary relationships instead of properties 
-    @property
-    def matchmakers(self):
-        return list({m.matchmaker for m in self.matches if m.matchmaker})
+    
+    matchmakers = db.relationship(
+        "Matchmaker",
+        secondary="matches",
+        primaryjoin="FemaleSingle.id == Match.female_single_id",
+        secondaryjoin="Matchmaker.id == Match.matchmaker_id",
+        viewonly=True,
+    )
 
-    @property
-    def male_singles(self):
-        return list({m.male_single for m in self.matches if m.male_single})
+    male_singles = db.relationship(
+        "MaleSingle",
+        secondary="matches",
+        primaryjoin="FemaleSingle.id == Match.female_single_id",
+        secondaryjoin="MaleSingle.id == Match.male_single_id",
+        viewonly=True,
+    )
 
 # Match Model
 class Match(db.Model):
