@@ -43,7 +43,7 @@ export function checkSessionApi() {
 
 export function logoutApi() {
   return apiFetch("/auth/logout", {
-    method: "GET"
+    method: "POST"
   });
 }
 

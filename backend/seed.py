@@ -1,15 +1,13 @@
-"""
-Seed script for Perfect Match
-This will DROP ALL TABLES and recreate them with fresh test data.
-"""
-
 import os
 import random
+
 from app import create_app
 from extensions import db
 from models import User, Matchmaker, MaleSingle, FemaleSingle, Match
 
-# Helper Data
+# ---------------------------------------------------
+# Helpers for generating random data
+# ---------------------------------------------------
 
 MALE_NAMES = [
     "David", "Aaron", "Moshe", "Yosef", "Daniel",
@@ -40,11 +38,21 @@ NOTES = [
     "Prefers someone who is growth-oriented.",
 ]
 
-MATCH_STATUSES = [
-    "Introduced", "Success", "Failed"
-]
+# ---------------------------------------------------
+# Match statuses allowed by backend
+# ---------------------------------------------------
 
-def random_male():
+ALLOWED_STATUSES = ["Introduced", "Dating", "Met", "Success", "Failed"]
+
+def random_status():
+    return random.choice(ALLOWED_STATUSES)
+
+
+# ---------------------------------------------------
+# Generators
+# ---------------------------------------------------
+
+def random_male(user_id):
     return {
         "first_name": random.choice(MALE_NAMES),
         "last_name": random.choice(LAST_NAMES),
@@ -53,10 +61,10 @@ def random_male():
         "location": random.choice(LOCATIONS),
         "phone_number": f"050-{random.randint(1000000, 9999999)}",
         "notes": random.choice(NOTES),
+        "user_id": user_id,
     }
 
-
-def random_female():
+def random_female(user_id):
     return {
         "first_name": random.choice(FEMALE_NAMES),
         "last_name": random.choice(LAST_NAMES),
@@ -65,87 +73,95 @@ def random_female():
         "location": random.choice(LOCATIONS),
         "phone_number": f"052-{random.randint(1000000, 9999999)}",
         "notes": random.choice(NOTES),
+        "user_id": user_id,
     }
 
 
-# SEED LOGIC
+# ---------------------------------------------------
+# Seeding logic
+# ---------------------------------------------------
 
 app = create_app()
 
 with app.app_context():
 
-    print("\n⚠️  Dropping existing tables…")
+    print("⚠️  Dropping existing tables…")
     db.drop_all()
     db.create_all()
 
+    # --------------------------
+    # Create default user
+    # --------------------------
     print("🧑‍💼 Creating admin user…")
-    admin = User(username="admin")
-    admin.password = "password123"
-    db.session.add(admin)
+
+    user = User(username="admin")
+    user.password = "password123"
+    db.session.add(user)
     db.session.commit()
 
-    # Create Matchmakers
+    # --------------------------
+    # Create matchmakers
+    # --------------------------
     print("💼 Creating matchmakers…")
 
-    matchmaker_names = [
-        "Sarah Klein",
-        "Rivka Adler",
-        "Chaya Green",
-        "Devorah Cohen",
-        "Avigail Rosen"
-    ]
-
     matchmakers = []
-    for name in matchmaker_names:
+    mk_names = ["Sarah Klein", "Rivka Adler", "Chaya Green"]
+
+    for name in mk_names:
         mk = Matchmaker(
             name=name,
             location=random.choice(LOCATIONS),
             phone_number=f"053-{random.randint(1000000, 9999999)}",
             email_address=f"{name.split()[0].lower()}@perfectmatch.com",
             salary=random.randint(3000, 8000),
-            user_id=admin.id,
+            user_id=user.id,
         )
-        db.session.add(mk)
         matchmakers.append(mk)
+        db.session.add(mk)
 
     db.session.commit()
 
-    # Create Male Singles
+    # --------------------------
+    # Male singles
+    # --------------------------
     print("🧔 Creating male singles…")
 
     male_singles = []
-    for _ in range(12):
-        m = MaleSingle(**random_male())
-        db.session.add(m)
-        male_singles.append(m)
+    for _ in range(10):
+        male = MaleSingle(**random_male(user.id))
+        male_singles.append(male)
+        db.session.add(male)
 
     db.session.commit()
 
-    # Create Female Singles
+    # --------------------------
+    # Female singles
+    # --------------------------
     print("👩 Creating female singles…")
 
     female_singles = []
-    for _ in range(12):
-        f = FemaleSingle(**random_female())
-        db.session.add(f)
-        female_singles.append(f)
+    for _ in range(10):
+        female = FemaleSingle(**random_female(user.id))
+        female_singles.append(female)
+        db.session.add(female)
 
     db.session.commit()
 
-    # Create Matches
+    # --------------------------
+    # Matches
+    # --------------------------
     print("💞 Creating matches…")
 
-    for _ in range(25):
+    for _ in range(20):
         match = Match(
             matchmaker_id=random.choice(matchmakers).id,
             male_single_id=random.choice(male_singles).id,
             female_single_id=random.choice(female_singles).id,
-            status=random.choice(MATCH_STATUSES),
+            status=random_status(),
             notes=random.choice(NOTES),
+            user_id=user.id,   
         )
-        db.session.add(match)
-
+    db.session.add(match)
     db.session.commit()
 
-    print("\n🌱 Seeding complete!")
-    print("Log in with username: admin  password: password123\n")
+    print("🌱 Seeding complete!")

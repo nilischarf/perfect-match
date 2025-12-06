@@ -15,7 +15,10 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(50), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
 
-    matchmakers = db.relationship("Matchmaker", back_populates="user")
+    matchmakers = db.relationship("Matchmaker", back_populates="user", cascade="all, delete-orphan")
+    male_singles = db.relationship("MaleSingle", back_populates="user", cascade="all, delete-orphan")
+    female_singles = db.relationship("FemaleSingle", back_populates="user", cascade="all, delete-orphan")
+    matches = db.relationship("Match", back_populates="user", cascade="all, delete-orphan")
 
     def get_id(self):
         return str(self.id)
@@ -45,8 +48,8 @@ class Matchmaker(db.Model):
     phone_number = db.Column(db.String(50))
     email_address = db.Column(db.String(120))
     salary = db.Column(db.Float, default=0, nullable=False)
-
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    
     user = db.relationship("User", back_populates="matchmakers")
 
     matches = db.relationship(
@@ -88,6 +91,9 @@ class MaleSingle(db.Model):
     location = db.Column(db.String(120))
     notes = db.Column(db.Text)
     phone_number = db.Column(db.String(50))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    
+    user = db.relationship("User", back_populates="male_singles")
 
     matches = db.relationship(
         "Match",
@@ -135,6 +141,9 @@ class FemaleSingle(db.Model):
     location = db.Column(db.String(120))
     notes = db.Column(db.Text)
     phone_number = db.Column(db.String(50))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    
+    user = db.relationship("User", back_populates="female_singles")
 
     matches = db.relationship(
         "Match",
@@ -179,9 +188,11 @@ class Match(db.Model):
     matchmaker_id = db.Column(db.Integer, db.ForeignKey("matchmakers.id"), nullable=False)
     male_single_id = db.Column(db.Integer, db.ForeignKey("male_singles.id"))
     female_single_id = db.Column(db.Integer, db.ForeignKey("female_singles.id"))
-
     status = db.Column(db.String(50))
     notes = db.Column(db.Text)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    
+    user = db.relationship("User", back_populates="matches")
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(
