@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import { loginApi } from "../utils/api";
 import "../styles/LoginPage.css";
 
@@ -38,7 +38,7 @@ function LoginPage({ onLogin }) {
   }
 
   return (
-    <div>
+    <div className="login-container">
       <h1>Login</h1>
       {error && <div style={{ color: "red", marginBottom: "0.5rem" }}>{error}</div>}
 
@@ -72,6 +72,7 @@ function LoginPage({ onLogin }) {
           {loading ? "Logging in..." : "Login"}
         </button>
       </form>
+      <p>Don't have an account? <Link to="/signup">Sign up</Link></p>
     </div>
   );
 }

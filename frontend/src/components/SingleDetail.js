@@ -1,31 +1,32 @@
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import MatchList from "./MatchList";
-import "../styles/SingleDetail.css";
 
 function SingleDetail({ single, type }) {
-  const navigate = useNavigate();
+  const [localSingle, setLocalSingle] = useState(single);
 
-  function handleViewMatch(id) {
-    navigate(`/matches/${id}`);
+  function handleMatchDelete(deletedId) {
+    setLocalSingle(prev => ({
+      ...prev,
+      matches: prev.matches.filter(m => m.id !== deletedId)
+    }));
   }
 
   return (
     <div>
-      <h2>
-        {single.first_name} {single.last_name}
-      </h2>
+      <h2>{localSingle.first_name} {localSingle.last_name}</h2>
 
-      <p>Age: {single.age}</p>
-      <p>Gender: {single.gender}</p>
-      <p>Location: {single.location}</p>
-      <p>Phone: {single.phone_number}</p>
-      {single.notes && <p>Notes: {single.notes}</p>}
+      <p>Age: {localSingle.age}</p>
+      <p>Gender: {localSingle.gender}</p>
+      <p>Location: {localSingle.location}</p>
+      <p>Phone: {localSingle.phone_number}</p>
+
+      {localSingle.notes && <p>Notes: {localSingle.notes}</p>}
 
       <h3>Matches for this {type === "male" ? "man" : "woman"}</h3>
 
       <MatchList
-        matches={single.matches || []}
-        onView={handleViewMatch}
+        matches={localSingle.matches || []}
+        onDelete={handleMatchDelete}   // 👈 UPDATE LOCAL STATE
       />
     </div>
   );

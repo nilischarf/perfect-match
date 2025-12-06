@@ -1,11 +1,14 @@
-import { useState } from "react";
+// src/components/MatchForm.js
+import { useState, useEffect } from "react";
 import "../styles/MatchForm.css";
 
-function MatchForm({ initialValues, males, females, onSubmit }) {
-  const [form, setForm] = useState(
-    initialValues || { status: "", male_id: "", female_id: "", notes: "" }
-  );
-  const [formError, setFormError] = useState("");
+function MatchForm({ initialValues, onSubmit }) {
+  const [form, setForm] = useState(initialValues);
+
+  // keep form in sync if initialValues change
+  useEffect(() => {
+    setForm(initialValues);
+  }, [initialValues]);
 
   function updateField(e) {
     const { name, value } = e.target;
@@ -14,22 +17,12 @@ function MatchForm({ initialValues, males, females, onSubmit }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-
-    if (!form.status || !form.male_id || !form.female_id) {
-      setFormError("Status, male and female are required.");
-      return;
-    }
-
-    setFormError("");
     onSubmit(form);
   }
 
   return (
     <form className="match-form" onSubmit={handleSubmit}>
-      {formError && (
-        <p style={{ color: "red", marginBottom: "0.5rem" }}>{formError}</p>
-      )}
-
+      {/* STATUS ONLY */}
       <label>
         Status
         <select
@@ -46,40 +39,7 @@ function MatchForm({ initialValues, males, females, onSubmit }) {
         </select>
       </label>
 
-      <label>
-        Male
-        <select
-          name="male_id"
-          value={form.male_id}
-          onChange={updateField}
-          required
-        >
-          <option value="">-- Select Male --</option>
-          {males.map((m) => (
-            <option key={m.id} value={m.id}>
-              {m.first_name} {m.last_name} ({m.age})
-            </option>
-          ))}
-        </select>
-      </label>
-
-      <label>
-        Female
-        <select
-          name="female_id"
-          value={form.female_id}
-          onChange={updateField}
-          required
-        >
-          <option value="">-- Select Female --</option>
-          {females.map((f) => (
-            <option key={f.id} value={f.id}>
-              {f.first_name} {f.last_name} ({f.age})
-            </option>
-          ))}
-        </select>
-      </label>
-
+      {/* NOTES ONLY */}
       <label>
         Notes
         <textarea

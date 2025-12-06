@@ -1,10 +1,7 @@
+// src/pages/MatchEditPage.js
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import {
-  apiFetch,
-  fetchMaleSingles,
-  fetchFemaleSingles,
-} from "../utils/api";
+import { apiFetch } from "../utils/api";
 import MatchForm from "../components/MatchForm";
 
 function MatchEditPage() {
@@ -12,22 +9,13 @@ function MatchEditPage() {
   const navigate = useNavigate();
 
   const [match, setMatch] = useState(null);
-  const [males, setMales] = useState([]);
-  const [females, setFemales] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function load() {
       try {
-        const [matchData, maleList, femaleList] = await Promise.all([
-          apiFetch(`/matches/${id}`),
-          fetchMaleSingles(),
-          fetchFemaleSingles(),
-        ]);
-
+        const matchData = await apiFetch(`/matches/${id}`);
         setMatch(matchData);
-        setMales(maleList);
-        setFemales(femaleList);
       } catch (err) {
         console.error(err);
         alert("Failed to load match");
@@ -40,12 +28,16 @@ function MatchEditPage() {
 
   async function handleSubmit(formData) {
     try {
+      // only send fields we actually allow to be updated
       await apiFetch(`/matches/${id}`, {
         method: "PATCH",
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          status: formData.status,
+          notes: formData.notes
+        })
       });
       alert("Match updated ✔");
-      navigate(`/matches/${id}`);
+      navigate(`/matches/${id}`); // back to details page
     } catch (err) {
       alert(err.data?.error || "Update failed");
     }
@@ -60,12 +52,8 @@ function MatchEditPage() {
       <MatchForm
         initialValues={{
           status: match.status || "",
-          male_id: match.male_single_id,
-          female_id: match.female_single_id,
-          notes: match.notes || "",
+          notes: match.notes || ""
         }}
-        males={males}
-        females={females}
         onSubmit={handleSubmit}
       />
     </div>

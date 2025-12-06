@@ -1,6 +1,6 @@
 .login-container {
   max-width: 380px;
-  margin: 4rem auto;
+  width: 100%;
   background: var(--card);
   padding: 2rem;
   border-radius: var(--radius);
@@ -8,7 +8,7 @@
 }
 
 .login-container h1 {
-  text-align: center;
+  text-align: left;
   margin-bottom: 1.5rem;
 }
 

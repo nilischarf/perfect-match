@@ -11,24 +11,41 @@ user_schema = UserSchema()
 
 @auth_bp.post("/signup")
 def signup():
-    data = request.json
-    username = data.get("username")
-    password = data.get("password")
+    data = request.get_json()
 
+    username = data.get("username", "").strip()
+    password = data.get("password", "").strip()
+
+    # --- Validations ---
     if not username or not password:
-        return jsonify({"error": "Username and password are required"}), 400
+        return {"error": "Username and password are required."}, 400
 
-    # Check if username already exists
+    if len(username) < 3:
+        return {"error": "Username must be at least 3 characters."}, 400
+
+    if len(password) < 6:
+        return {"error": "Password must be at least 6 characters."}, 400
+
+    # Prevent duplicate usernames
     if User.query.filter_by(username=username).first():
-        return jsonify({"error": "Username already exists"}), 400
+        return {"error": "Username already taken."}, 400
 
-    # Create user
+    # Create user (password hashing already handled by setter)
     user = User(username=username)
-    user.password = password
+    user.password = password  
+
     db.session.add(user)
     db.session.commit()
 
-    return jsonify(user_schema.dump(user)), 201
+    # Auto-login user (optional — can remove)
+    login_user(user)
+
+    return {
+        "message": "Signup successful",
+        "user": {"id": user.id, "username": user.username},
+        "logged_in": True
+    }, 201
+
 
 @auth_bp.post("/login")
 def login():
@@ -48,6 +65,7 @@ def login():
         "user": user_schema.dump(user)
     }), 200
 
+
 @auth_bp.route("/check_session", methods=["GET"])
 def check_session():
     if current_user.is_authenticated:
@@ -59,6 +77,7 @@ def check_session():
     return jsonify({
         "logged_in": False
     }), 200
+    
 
 @auth_bp.get("/logout")
 @login_required

@@ -30,7 +30,7 @@ def get_matchmaker(id):
 def create_matchmaker():
     data = request.json or {}
 
-    required = ["name", "location"]
+    required = ["name", "location", "email_address", "phone_number", "salary"]
     missing = [f for f in required if not data.get(f)]
     if missing:
         return jsonify({"error": f"Missing required fields: {', '.join(missing)}"}), 400

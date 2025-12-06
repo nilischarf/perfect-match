@@ -6,10 +6,12 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
 import MaleSinglesPage from "./pages/MaleSinglesPage";
 import FemaleSinglesPage from "./pages/FemaleSinglesPage";
 import MatchmakersPage from "./pages/MatchmakersPage";
 import MatchmakerDetailPage from "./pages/MatchmakerDetailPage";
+import MatchCreatePage from "./pages/MatchCreatePage";
 
 import MatchDetailPage from "./pages/MatchDetailPage";
 import MatchEditPage from "./pages/MatchEditPage";
@@ -59,6 +61,13 @@ function App() {
           path="/login"
           element={<LoginPage onLogin={setUser} />}
         />
+
+        <Route 
+          path="/signup" 
+          element={<SignupPage 
+          onSignup={setUser} />} 
+        />
+
         <Route
           path="/"
           element={<HomePage user={user} />}
@@ -116,6 +125,15 @@ function App() {
           element={
             <ProtectedRoute user={user}>
               <MatchEditPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/matches/new"
+          element={
+            <ProtectedRoute user={user}>
+              <MatchCreatePage />
             </ProtectedRoute>
           }
         />

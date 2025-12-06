@@ -196,8 +196,8 @@ class Match(db.Model):
 
     @validates("status")
     def validate_status(self, key, val):
-        if val not in VALID_STATUSES:
-            raise ValueError(f"Invalid status: {val}")
+        if not val or len(val) > 50:
+            raise ValueError("Invalid status")
         return val
 
     @validates("male_single_id", "female_single_id")

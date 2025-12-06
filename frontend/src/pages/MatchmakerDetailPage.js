@@ -1,34 +1,50 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { fetchMatchmaker } from "../utils/api";
+import { fetchMatchmaker, apiFetch } from "../utils/api";
 import MatchmakerDetail from "../components/MatchmakerDetail";
 
 function MatchmakerDetailPage() {
   const { id } = useParams();
   const [matchmaker, setMatchmaker] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+
+  async function load() {
+    try {
+      const data = await fetchMatchmaker(id);
+      setMatchmaker(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleDeleteMatch(matchId) {
+    try {
+      await apiFetch(`/matches/${matchId}`, { method: "DELETE" });
+
+      setMatchmaker((prev) => ({
+        ...prev,
+        matches: prev.matches.filter((m) => m.id !== matchId)
+      }));
+    } catch (err) {
+      alert("Failed to delete match");
+    }
+  }
 
   useEffect(() => {
-    async function load() {
-      try {
-        const data = await fetchMatchmaker(id);
-        setMatchmaker(data);
-      } catch (err) {
-        console.error(err);
-        setError("Failed to load matchmaker");
-      } finally {
-        setLoading(false);
-      }
-    }
     load();
   }, [id]);
 
-  if (loading) return <div>Loading matchmaker...</div>;
-  if (error) return <div>{error}</div>;
-  if (!matchmaker) return <div>Not found</div>;
+  if (loading) return <p>Loading matchmaker...</p>;
+  if (!matchmaker) return <p>Not found</p>;
 
-  return <MatchmakerDetail matchmaker={matchmaker} />;
+  return (
+    <MatchmakerDetail
+      matchmaker={matchmaker}
+      onDeleteMatch={handleDeleteMatch}
+    />
+  );
 }
 
 export default MatchmakerDetailPage;

@@ -33,6 +33,9 @@ function NavBar({ user, onLogout }) {
           <NavLink to="/female-singles" style={activeStyle}>
             Female Singles
           </NavLink>
+          <NavLink to="/matches/new" style={activeStyle}>
+            Create Match
+          </NavLink>
         </div>
       )}
 

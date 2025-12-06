@@ -1,7 +1,7 @@
 import MatchList from "./MatchList";
 import "../styles/MatchmakerDetail.css";
 
-function MatchmakerDetail({ matchmaker }) {
+function MatchmakerDetail({ matchmaker, onDeleteMatch }) {
   return (
     <div>
       <h1>{matchmaker.name}</h1>
@@ -11,7 +11,10 @@ function MatchmakerDetail({ matchmaker }) {
       <p>Salary: {matchmaker.salary ?? "N/A"}</p>
 
       <h2>Matches</h2>
-      <MatchList matches={matchmaker.matches || []} refresh={() => window.location.reload()} />
+      <MatchList
+        matches={matchmaker.matches || []}
+        onDelete={onDeleteMatch}
+      />
     </div>
   );
 }
