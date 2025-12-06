@@ -48,7 +48,6 @@
   font-size: 0.95rem;
 }
 
-/* Reuse global button but tweak slightly in navbar */
 .navbar button {
   padding: 0.35rem 1rem;
   font-size: 0.9rem;

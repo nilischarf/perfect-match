@@ -1,5 +1,3 @@
-/* src/styles/DeleteButton.css */
-
 .delete-btn {
   /* force this to win over generic button styles */
   background: #ff6ea8 !important; /* same pink as your match delete */

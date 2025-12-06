@@ -60,27 +60,29 @@ function MatchmakersPage() {
         onSelect={(id) => navigate(`/matchmakers/${id}`)}
       />
 
-      <h2>Add Matchmaker</h2>
-      <form onSubmit={handleCreate} style={{ maxWidth: 400 }}>
-        <label>
-          Name:
-          <input
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-            required
-          />
-        </label>
+      <div className="matchmaker_form">
+        <h2>Add Matchmaker</h2>
+        <form onSubmit={handleCreate} style={{ maxWidth: 400 }}>
+          <label>
+            Name:
+            <input
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              required
+            />
+          </label>
 
-        <label>
-          Location:
-          <input
-            value={newLocation}
-            onChange={(e) => setNewLocation(e.target.value)}
-          />
-        </label>
+          <label>
+            Location:
+            <input
+              value={newLocation}
+              onChange={(e) => setNewLocation(e.target.value)}
+            />
+          </label>
 
-        <button type="submit">Add Matchmaker</button>
-      </form>
+          <button type="submit">Add Matchmaker</button>
+        </form>
+      </div>
     </div>
   );
 }
